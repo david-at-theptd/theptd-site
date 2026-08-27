@@ -134,10 +134,10 @@
       </form>
 
     </div>
-  </div>
 
-  <!-- Overlays: document viewer, terms, disclosure, lawyer warning -->
-  <div id="overlay" class="overlay" v-if="overlayOpen" v-cloak>
+    <!-- Overlays: document viewer, terms, disclosure, lawyer warning -->
+    <!-- Must stay INSIDE #app-root - Vue only processes v-if/v-cloak/(( )) for elements inside the element it's mounted to -->
+    <div id="overlay" class="overlay" v-if="overlayOpen" v-cloak>
     <div class="overlay-inner" v-if="currOverlay === 'document' && currDocument">
       <h1>(( currDocument.name ))</h1>
       <iframe class="pdf-cont" :src="currDocument.filename"></iframe>
@@ -170,6 +170,7 @@
         <button type="button" class="btn -blue" @click="closeOverlay">Keep my own lawyer</button>
       </div>
     </div>
+  </div>
   </div>
 </div>
 
