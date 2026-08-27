@@ -3,7 +3,7 @@
 */
 
 .main-form.-check {
-  top: -150px;
+  margin-top: 60px;
 }
 
 .house-icon {
@@ -74,9 +74,8 @@ hr { margin: 30px 0; }
 
 .savings-cont, .no-savings-cont {
   position: relative;
-  top: -100px;
   background-color: var(--white);
-  margin: 0 auto 70px auto;
+  margin: 40px auto 70px auto;
   padding: 50px 100px 100px;
   box-shadow: rgba(0,0,0,0.2) 0px 2px 50px;
   width: 700px;
