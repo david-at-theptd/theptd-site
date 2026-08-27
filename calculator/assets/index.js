@@ -46,6 +46,12 @@ const AccessCodeInputSel = '#access-code';
 const AccessCodeErrSel = '#access-code-err';
 
 const LookupFormSel = '#check-prop-form';
+
+// The whole card (heading, house icon, form, and helpful hints) - used to
+// show/hide the entire lookup UI, as opposed to LookupFormSel which is just
+// the <form> itself (needed separately since jQuery's .submit() only binds
+// to an actual form element)
+const LookupCardSel = '.main-form.-check';
 const AddressInputSel = '#addr-input';
 const SignUpBtn = '.sign-up-btn';
 const AddrLoaderSel = '#addr-loader';
@@ -229,7 +235,7 @@ function backToLookup() {
 
   $(SavingsContSel).slideUp();
   $(NoSavingsContSel).slideUp();
-  $(LookupFormSel).slideDown();
+  $(LookupCardSel).slideDown();
 }
 
 /**
@@ -400,8 +406,8 @@ function showSavings(currentTax, predictedTax, yearsTillReasses) {
   // Hide no savings message
   $(NoSavingsContSel).addClass(HiddenClass);
 
-  // Hide lookup form
-  $(LookupFormSel).slideUp();
+  // Hide the whole lookup card (form + heading + hints), not just the form
+  $(LookupCardSel).slideUp();
 
   // if yearsTillReasses is 0, set it 1
   yearsTillReasses = yearsTillReasses || 1;
@@ -438,8 +444,8 @@ function showNoSavings(isClosed = false) {
 
   vueApp.errors.isClosed = isClosed;
 
-  // Hide lookup form
-  $(LookupFormSel).slideUp();
+  // Hide the whole lookup card (form + heading + hints), not just the form
+  $(LookupCardSel).slideUp();
 
   $(NoSavingsContSel).removeClass(HiddenClass);
   $(NoSavingsContSel).slideDown();
