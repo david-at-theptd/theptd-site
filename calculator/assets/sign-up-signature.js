@@ -20,11 +20,12 @@ const ExpDateRegex = /^\d{2}\/\d{2}\/\d{4}$/; // Matches MM/DD/YYYY exactly
 const ShortDateRegex = /^\d{2}\/\d{2}\/\d{2}$/; // Matches MM/DD/YY exactly
 const TwoNamesRegex = /[a-zA-Z][a-zA-Z]\s[a-zA-Z][a-zA-Z]/; // Requires first and last name
 
-/** The minimum number of points required for a valid drawn signature. Even a
-"straight" line will have at 8 or so points since it's hand-drawn, so this
-only prevents somone just putting two dots as a signature or something like
-that*/
-const MinSignaturePoints = 10;
+/** The minimum number of points required for a valid drawn signature. This
+just needs to filter out a literal single tap/click - real signatures, even
+very quick or simple ones, clear this easily. (Lowered from the original 10,
+which was rejecting legitimate short signatures and showing the same error
+as a truly empty signature pad, making it look like a bug.) */
+const MinSignaturePoints = 3;
 
 /** The size we consider mobile, under which we clear the signature pad on
 resize */
