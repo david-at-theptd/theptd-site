@@ -118,8 +118,11 @@
           </div>
         </div>
 
-        <p class="error-msg -block" :class="{ hidden: !formErrors.any }" v-cloak>
-          Please complete your signature and agree to the terms above before continuing.
+        <p class="error-msg -block" :class="{ hidden: !formErrors.signature }" v-cloak>
+          Your signature above still needs attention - draw in the box or type your full first and last name.
+        </p>
+        <p class="error-msg -block" :class="{ hidden: !formErrors.accept }" v-cloak>
+          Please check both boxes above (the fee agreement and the terms and conditions) before continuing.
         </p>
         <p class="error-msg -block" :class="{ hidden: !formErrors.signup }" v-cloak>
           Something went wrong submitting your signup. Please try again.
