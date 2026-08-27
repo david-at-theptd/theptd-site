@@ -363,6 +363,15 @@ function validateAndSubmitForm(submitEvent) {
   // recorded points depending on how it was drawn. That made this check
   // unreliably reject genuine signatures. signaturePad.isEmpty() is the
   // library's own reliable answer to "was anything drawn" - trust it alone.
+  // We do still check hasSignatureSize() separately, which measures actual
+  // physical size instead of point count, to catch a single accidental
+  // click/tap (which isEmpty() alone would let through).
+
+  if (!signaturePad.isEmpty() && !hasSignatureSize()) {
+    this.formErrors.signature = true;
+    anyErrors = true;
+    console.log('Signature too small - looks like a single click, not a drawn signature');
+  }
 
   if (vueApp.otherFields.typedSignature && !hasValidTypedSignature()) {
     this.formErrors.signature = true;
@@ -386,6 +395,47 @@ function validateAndSubmitForm(submitEvent) {
   if (!anyErrors && signupData) {
     submitSignup();
   }
+}
+
+/** The minimum width or height (in pixels) the drawn signature needs to span
+to count as a real signature rather than a single accidental click/tap.
+Unlike counting points, measuring physical size stays reliable regardless of
+how fast someone draws or how many points signature_pad happens to record -
+a real signature, even a very quick one, covers real distance. A single
+click covers essentially none. */
+const MinSignatureSize = 15;
+
+/**
+* Checks whether the drawn signature covers enough physical area to be a
+* real signature, as opposed to a single click/tap that registers as
+* "not empty" but has no actual size.
+*/
+function hasSignatureSize() {
+  const strokes = signaturePad.toData();
+
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+  strokes.forEach(stroke => {
+    // signature_pad v4 wraps each stroke's points in a `points` property;
+    // fall back to treating the stroke itself as the points array in case
+    // of a version difference.
+    const points = stroke.points || stroke;
+
+    points.forEach(point => {
+      if (point.x < minX) minX = point.x;
+      if (point.x > maxX) maxX = point.x;
+      if (point.y < minY) minY = point.y;
+      if (point.y > maxY) maxY = point.y;
+    });
+  });
+
+  // No points at all (shouldn't happen if isEmpty() is false, but be safe)
+  if (!isFinite(minX)) { return false; }
+
+  const width = maxX - minX;
+  const height = maxY - minY;
+
+  return width > MinSignatureSize || height > MinSignatureSize;
 }
 
 function hasValidTypedSignature(){
