@@ -357,20 +357,21 @@ function validateAndSubmitForm(submitEvent) {
   // proceeded to type their signature. Split it out into two separate checks. David Jo - 3/23/2022
   this.formErrors.signature = false;
 
-  // NOTE: We used to also check hasDrawnSignature() (a point-count threshold)
-  // here, but signature_pad filters/simplifies points internally for smooth
-  // rendering, so a perfectly real signature can end up with very few
-  // recorded points depending on how it was drawn. That made this check
-  // unreliably reject genuine signatures. signaturePad.isEmpty() is the
-  // library's own reliable answer to "was anything drawn" - trust it alone.
-  // We do still check hasSignatureSize() separately, which measures actual
-  // physical size instead of point count, to catch a single accidental
-  // click/tap (which isEmpty() alone would let through).
+  // NOTE: We used to check hasDrawnSignature() (a point-count threshold),
+  // then hasSignatureSize() (a bounding-box size threshold) here. Point
+  // count is unreliable because signature_pad simplifies points internally.
+  // Size alone is also insufficient - it lets a straight-line drag through,
+  // since a short dragged line has real physical size but no actual
+  // signature-like shape. hasSignatureComplexity() instead compares how far
+  // the pen actually traveled to the straight-line distance between start
+  // and end - a real signature curves/loops/doubles back and so travels
+  // noticeably further than that straight-line distance, while a dot or a
+  // straight drag does not.
 
-  if (!signaturePad.isEmpty() && !hasSignatureSize()) {
+  if (!signaturePad.isEmpty() && !hasSignatureComplexity()) {
     this.formErrors.signature = true;
     anyErrors = true;
-    console.log('Signature too small - looks like a single click, not a drawn signature');
+    console.log('Signature too simple - looks like a single click or straight-line drag, not a drawn signature');
   }
 
   if (vueApp.otherFields.typedSignature && !hasValidTypedSignature()) {
@@ -397,23 +398,32 @@ function validateAndSubmitForm(submitEvent) {
   }
 }
 
-/** The minimum width or height (in pixels) the drawn signature needs to span
-to count as a real signature rather than a single accidental click/tap.
-Unlike counting points, measuring physical size stays reliable regardless of
-how fast someone draws or how many points signature_pad happens to record -
-a real signature, even a very quick one, covers real distance. A single
-click covers essentially none. */
+/** How small a straight-line distance (in pixels) between a stroke's start
+and end point we treat as "the pen didn't really go anywhere" for the
+fallback case below - e.g. a tiny scribble or loop drawn in place, which
+has real path length but a near-zero net displacement. */
 const MinSignatureSize = 15;
 
+/** How much longer the actual drawn path needs to be than the straight-line
+distance between its start and end point to count as a real signature. A
+straight-line drag has a ratio of ~1.0 (the pen went directly from A to B).
+Real signatures curve, loop, or double back as letters form, so they cover
+noticeably more ground than the straight-line distance between their
+endpoints - even a fast, simple one. */
+const MinPathComplexityRatio = 1.2;
+
 /**
-* Checks whether the drawn signature covers enough physical area to be a
-* real signature, as opposed to a single click/tap that registers as
-* "not empty" but has no actual size.
+* Checks whether the drawn signature has real shape (curves, loops,
+* direction changes) rather than being a single click/tap or a straight
+* line dragged from one point to another. Point count and physical size
+* alone can't tell a real signature apart from a straight drag - shape can.
 */
-function hasSignatureSize() {
+function hasSignatureComplexity() {
   const strokes = signaturePad.toData();
 
-  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  let totalPathLength = 0;
+  let firstPoint = null;
+  let lastPoint = null;
 
   strokes.forEach(stroke => {
     // signature_pad v4 wraps each stroke's points in a `points` property;
@@ -421,21 +431,39 @@ function hasSignatureSize() {
     // of a version difference.
     const points = stroke.points || stroke;
 
-    points.forEach(point => {
-      if (point.x < minX) minX = point.x;
-      if (point.x > maxX) maxX = point.x;
-      if (point.y < minY) minY = point.y;
-      if (point.y > maxY) maxY = point.y;
+    points.forEach((point, i) => {
+      if (!firstPoint) { firstPoint = point; }
+      lastPoint = point;
+
+      // Sum the actual point-to-point distance traveled within this stroke.
+      // We don't count the implicit "jump" between separate strokes (e.g.
+      // between crossing a 't' and the rest of a name), since the pen was
+      // lifted there, not dragged.
+      if (i > 0) {
+        const prev = points[i - 1];
+        const dx = point.x - prev.x;
+        const dy = point.y - prev.y;
+        totalPathLength += Math.sqrt(dx * dx + dy * dy);
+      }
     });
   });
 
   // No points at all (shouldn't happen if isEmpty() is false, but be safe)
-  if (!isFinite(minX)) { return false; }
+  if (!firstPoint || !lastPoint) { return false; }
 
-  const width = maxX - minX;
-  const height = maxY - minY;
+  const dx = lastPoint.x - firstPoint.x;
+  const dy = lastPoint.y - firstPoint.y;
+  const straightLineDistance = Math.sqrt(dx * dx + dy * dy);
 
-  return width > MinSignatureSize || height > MinSignatureSize;
+  // If the overall start and end points are very close together (e.g. a
+  // scribble or small loop drawn in place, or a single dot), the ratio
+  // below would be unreliable (or divide by ~0). Fall back to requiring
+  // some minimum real path length instead.
+  if (straightLineDistance < MinSignatureSize) {
+    return totalPathLength > MinSignatureSize;
+  }
+
+  return (totalPathLength / straightLineDistance) >= MinPathComplexityRatio;
 }
 
 function hasValidTypedSignature(){
