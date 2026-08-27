@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check Your Property Taxes | The Property Tax Department, LLC</title>
+
+<!-- Same external libraries the plugin originally relied on -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<!--
+  This replaces the one bit of WordPress-specific glue: the plugin's PHP
+  used wp_localize_script() to inject a `PluginData` object with the URL
+  of the next signup step. We do the same thing here, manually, per page.
+-->
+<script>
+  const PluginData = {
+    nextUrl: 'sign-up.html',      // step 2
+    lookupUrl: 'index.html'       // this page
+  };
+</script>
+
+<link rel="stylesheet" href="assets/main.css">
+<link rel="stylesheet" href="assets/index.css">
+<link rel="stylesheet" href="assets/site-chrome.css">
+</head>
+<body>
+
+<header class="ptd-site-header">
+  <a href="../index.html" class="ptd-site-logo">THE PROPERTY TAX DEPT<span>LLC</span></a>
+</header>
+
+<div id="page-content">
+
+  <div id="app-root" class="ptd-main">
+    <div class="main-form -check">
+      <div class="house-icon">
+        <img src="assets/images/house-icon.png" alt="">
+      </div>
+
+      <h2 class="center">Check your <span class="bold">Property Taxes</span></h2>
+
+      <form id="check-prop-form">
+        <div class="label-row">
+          <label for="addr-input">Property Address</label>
+          <button type="button" class="tooltip">
+            ?
+            <div class="tooltip-text hidden" aria-live="polite">
+              <p>To quickly match to your address, please enter your complete address in USPS format with no punctuation.</p>
+              <p>Ex: 123 N Main St, NOT 123 Main, 123 N. Main or 123 North Main</p>
+            </div>
+          </button>
+        </div>
+
+        <input id="addr-input" type="text" class="full-width" placeholder="Start typing your address" autocomplete="off" aria-describedby="addr-error">
+
+        <p id="addr-error" class="inline-error -hidden" :class="{ '-hidden': !errors.address }" v-cloak>
+          We couldn't find that address &mdash; please select one from the dropdown list.
+        </p>
+
+        <button type="submit" class="btn -full-width -orange">
+          Check
+          <span class="arrow" aria-hidden="true">→</span>
+          <svg id="addr-loader" class="loading hidden" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="40 56"></circle>
+          </svg>
+        </button>
+      </form>
+
+      <p class="error-msg -block" :class="{ '-hidden': !errors.savings }" v-cloak>
+        (( errorText ))
+      </p>
+
+      <hr>
+
+      <p style="font-size:.85rem; color:var(--text-color-light);">
+        <strong>Helpful hints:</strong>
+      </p>
+      <ul style="font-size:.85rem; color:var(--text-color-light); padding-left:18px;">
+        <li>To file an appeal we must use the county address &mdash; even when it is different or &ldquo;wrong&rdquo; according to the USPS.</li>
+        <li>As soon as you see your address in the drop-down list, arrow down to highlight your address and press enter.</li>
+        <li>To make it easier, please omit any and all punctuation. No need to add a period after an abbreviation.</li>
+      </ul>
+    </div>
+
+    <!-- Shown when the property has appealable savings -->
+    <div id="savings-cont" class="savings-cont hidden">
+      <p class="savings-intro center">
+        We think you can save $<span class="savings-out"></span> per year!
+      </p>
+
+      <div class="graph">
+        <div id="current-bar" class="graph-bar -red">
+          <div class="inner-text">
+            <div class="price">$<span class="current-tax-out"></span></div>
+            You are here
+          </div>
+        </div>
+        <div id="future-bar" class="graph-bar -green">
+          <div class="inner-text">
+            <div class="price">$<span class="predicted-out"></span></div>
+            You should be here
+          </div>
+          <div class="outer-text">Savings of $<span class="savings-out"></span></div>
+        </div>
+      </div>
+
+      <p>
+        Your next re-assessment is in <span class="reassess-years-out"></span> years so
+        <strong>you can save a total of $<span class="savings-tot-out"></span> until your next reassessment!</strong>
+      </p>
+
+      <button type="button" class="sign-up-btn btn -full-width -blue">
+        Sign Up To Save $<span class="savings-out"></span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </button>
+
+      <hr>
+      <button type="button" class="back-btn btn -outline">Back to Lookup</button>
+    </div>
+
+    <!-- Shown when there's no clear savings yet -->
+    <div id="no-savings-cont" class="no-savings-cont hidden">
+      <p class="savings-intro center">Hmmm, we need to dig a little deeper on your property.</p>
+      <p>
+        While at first glance, it appears you may be fairly assessed, our Analysts will personally review your
+        property's assessment and be in touch with their findings. If there is any basis to lower your assessment
+        and save you money, we will find it and aggressively pursue it for you!
+      </p>
+      <button type="button" class="sign-up-btn btn -full-width -blue">
+        Sign Up <span class="arrow" aria-hidden="true">→</span>
+      </button>
+      <button type="button" class="back-btn btn -outline">Back to Lookup</button>
+    </div>
+  </div>
+
+</div>
+
+<footer class="ptd-site-footer">
+  © 2026 The Property Tax Department, LLC &middot; <a href="../index.html">Back to site</a>
+</footer>
+
+<!-- Same JS files from the plugin, byte-for-byte, calling the same unchanged backend -->
+<script src="assets/main.js"></script>
+<script src="assets/index.js"></script>
+</body>
+</html>

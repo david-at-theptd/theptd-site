@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up - Agreement &amp; Signature | The Property Tax Department, LLC</title>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4/dist/signature_pad.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Alex+Brush&display=swap" rel="stylesheet">
+
+<script>
+  const PluginData = {
+    nextUrl: 'confirmation.html',   // step 5
+    lookupUrl: 'index.html',        // step 1
+    pluginUrl: ''                   // prefix for /docs/ - point this at wherever your PDFs live
+  };
+</script>
+
+<link rel="stylesheet" href="assets/main.css">
+<link rel="stylesheet" href="assets/sign-up.css">
+<link rel="stylesheet" href="assets/sign-up-signature.css">
+<link rel="stylesheet" href="assets/site-chrome.css">
+</head>
+<body>
+
+<header class="ptd-site-header">
+  <a href="../index.html" class="ptd-site-logo">THE PROPERTY TAX DEPT<span>LLC</span></a>
+</header>
+
+<script src="assets/main.js"></script>
+<script src="assets/documents-config.js"></script>
+
+<div id="page-content">
+  <div id="app-root" class="ptd-main">
+    <div class="main-form -sign-up">
+
+      <h2>Agreement &amp; Signature</h2>
+
+      <p class="error-msg" :class="{ hidden: !formErrors.prevSteps }" v-cloak>
+        You haven't completed the previous signup steps! <a :href="LookupUrl" href="index.html">Start sign up</a>.
+      </p>
+
+      <p>
+        By signing below, I give PTD permission to contact me via text and/or email regarding my
+        appeal and acknowledge that I have read and agree to the documents below. If you want to
+        opt out of our infrequent contact by text messaging, please send us an email.
+      </p>
+
+      <ul class="docs-list">
+        <li v-for="doc in documents" :key="doc.filename">
+          <button type="button" class="link" @click="viewDocument(doc)">
+            (( doc.name )) <span class="new-tab" aria-hidden="true">↗</span>
+          </button>
+          <a :href="doc.filename" target="_blank">(( doc.name ))</a>
+        </li>
+      </ul>
+
+      <form @submit="validateAndSubmitForm">
+
+        <label class="label">Draw Your Signature</label>
+        <canvas id="signature-canvas" class="signature-box"></canvas>
+        <div class="signature-btns">
+          <button type="button" class="btn -mini -outline" @click="undoSignatureStroke">Undo</button>
+          <button type="button" class="btn -mini -outline" @click="clearSignature()">Clear</button>
+        </div>
+
+        <label class="label" for="typed-signature">Or Type Your Signature (Make sure you type BOTH first and last name)</label>
+        <input id="typed-signature" type="text" placeholder="John Doe"
+          v-model="otherFields.typedSignature" @input="drawTextSignature">
+
+        <p class="inline-error" :class="{ '-hidden': !formErrors.signature }" v-cloak>
+          Please draw or type a valid full signature (first and last name) above.
+        </p>
+
+        <div class="disclosure-panel">
+          <h2>Disclosure &amp; Sharing Appeal Information</h2>
+          <p>
+            This disclosure is to make sure that you understand that a lawyer may be retained on
+            your behalf, <strong>at no additional cost to you</strong>, and you are giving
+            permission for The PTD and the lawyer to communicate with each other regarding your
+            tax appeal. <button type="button" class="link" @click="openDisclosure">Read more</button>.
+          </p>
+
+          <div class="radio-cont">
+            <input type="radio" id="lawyer-ptd" :value="true" v-model="formData.acceptLawyer">
+            <label for="lawyer-ptd">
+              I am in agreement that, if necessary, The PTD will retain a lawyer for me,
+              <strong>at no additional cost to me</strong>, to pursue certain tax appeal filings.
+            </label>
+          </div>
+          <div class="radio-cont">
+            <input type="radio" id="lawyer-own" :value="false" v-model="formData.acceptLawyer"
+              @change="openLawyerWarning">
+            <label for="lawyer-own">
+              I want to hire my own lawyer, <strong>at my own expense</strong>. I do NOT want The
+              PTD to retain a lawyer for me at no additional cost to me. I understand that by
+              choosing this option I am responsible for all lawyer fees.
+            </label>
+          </div>
+        </div>
+
+        <div class="checkboxes-cont">
+          <div class="checkbox-row">
+            <input type="checkbox" id="agree-fee" v-model="otherFields.agreeFee">
+            <label for="agree-fee">
+              I understand that there is no fee to research and file my appeal. The only fee I owe
+              is (( PriceShare )) of what I save in the first year only. If my appeal is not
+              successful, there is no fee.
+            </label>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" id="agree-terms" v-model="otherFields.agreeTerms">
+            <label for="agree-terms">
+              I have read and agree to the <button type="button" class="link" @click="openTerms">terms and conditions</button>.
+            </label>
+          </div>
+        </div>
+
+        <p class="error-msg -block" :class="{ hidden: !formErrors.any }" v-cloak>
+          Please complete your signature and agree to the terms above before continuing.
+        </p>
+        <p class="error-msg -block" :class="{ hidden: !formErrors.signup }" v-cloak>
+          Something went wrong submitting your signup. Please try again.
+        </p>
+
+        <div class="submit-btn-cont">
+          <button type="submit" class="btn -orange" :disabled="submitting">
+            Agree &amp; Sign Up
+            <span class="arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Overlays: document viewer, terms, disclosure, lawyer warning -->
+  <div id="overlay" class="overlay" v-if="overlayOpen" v-cloak>
+    <div class="overlay-inner" v-if="currOverlay === 'document' && currDocument">
+      <h1>(( currDocument.name ))</h1>
+      <iframe class="pdf-cont" :src="currDocument.filename"></iframe>
+      <button type="button" class="btn -outline" @click="closeOverlay">Close</button>
+    </div>
+
+    <div class="overlay-inner" v-if="currOverlay === 'terms'">
+      <h1>Terms &amp; Conditions</h1>
+      <div class="terms-cont">
+        <p>Full terms and conditions text goes here.</p>
+      </div>
+      <button type="button" class="btn -outline" @click="closeOverlay">Close</button>
+    </div>
+
+    <div class="overlay-inner" v-if="currOverlay === 'disclosure'">
+      <h1>Disclosure Details</h1>
+      <div class="terms-cont">
+        <p>Full disclosure text goes here.</p>
+      </div>
+      <button type="button" class="btn -outline" @click="closeOverlay">Close</button>
+    </div>
+
+    <div class="overlay-inner -warning" v-if="currOverlay === 'lawyer-warning'">
+      <h1>Are you sure?</h1>
+      <div>
+        <p>
+          Choosing your own lawyer means you're responsible for all associated lawyer fees.
+        </p>
+        <button type="button" class="btn -outline" @click="usePtdLawyer">Use The PTD's lawyer instead</button>
+        <button type="button" class="btn -blue" @click="closeOverlay">Keep my own lawyer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="ptd-site-footer">
+  © 2026 The Property Tax Department, LLC &middot; <a href="../index.html">Back to site</a>
+</footer>
+
+<script src="assets/sign-up-signature.js"></script>
+</body>
+</html>

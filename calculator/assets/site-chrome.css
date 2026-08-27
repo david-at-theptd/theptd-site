@@ -1,0 +1,46 @@
+/**
+* Minimal site chrome for the calculator funnel pages - ties them visually
+* back to the main site's redesign without competing with the Poppins-based
+* calculator styling inside .ptd-main
+*/
+
+.ptd-site-header {
+  background: #1C2B45;
+  padding: 18px 40px;
+}
+
+.ptd-site-logo {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ptd-site-logo span {
+  font-family: monospace;
+  font-weight: 500;
+  font-size: .62rem;
+  background: rgba(255,255,255,0.15);
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: .06em;
+}
+
+.ptd-site-footer {
+  background: #1C2B45;
+  color: rgba(247,247,241,0.7);
+  text-align: center;
+  padding: 24px;
+  font-size: .8rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.ptd-site-footer a {
+  color: #ffffff;
+  text-decoration: underline;
+}

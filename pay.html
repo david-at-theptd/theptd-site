@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pay My Invoice | The Property Tax Department, LLC</title>
+<meta name="description" content="Pay your property tax appeal invoice online.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap nav" id="navBar">
+    <a href="index.html" class="logo" style="text-decoration:none;">THE PROPERTY TAX DEPT<span>LLC</span></a>
+    <nav id="mainNav">
+      <ul>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#deadlines">Appeal Deadlines</a></li>
+        <li><a href="index.html#faq">FAQ</a></li>
+        <li><a href="index.html#testimonials">Testimonials</a></li>
+        <li><a href="index.html#contact">Contact Us</a></li>
+        <li><a href="calculator/index.html" class="nav-cta">Sign Up</a></li>
+      </ul>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="wrap">
+    <div class="eyebrow">Existing clients</div>
+    <h1>Pay My Invoice</h1>
+    <p>
+      Thank you for your trust in The Property Tax Department, LLC — we're glad we could save
+      you real money on your property tax bill. We look forward to working together in the future
+      to keep home ownership affordable in Illinois.
+    </p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap prose">
+
+    <p>Look up your invoice below using the PIN or invoice number from your appeal packet.</p>
+
+    <form class="simple-form" onsubmit="return false;">
+      <label for="invoice-lookup">Property PIN or Invoice Number</label>
+      <input id="invoice-lookup" type="text" placeholder="e.g. 08-13-314-026-0000">
+      <button type="submit" class="btn btn-primary -full-width" style="width:100%; justify-content:center;">
+        Find My Invoice
+      </button>
+    </form>
+
+    <div class="notice-box" style="margin-top:32px;">
+      <strong>Note for implementation</strong>
+      This lookup form is a placeholder shell — wire the submit handler to whatever payment
+      processor you're using (Stripe, LawPay, etc.) so it looks up the invoice and hands off to
+      checkout. I deliberately didn't carry over the old site's "technical difficulties" banner
+      here, since that was a point-in-time outage notice, not evergreen content.
+    </div>
+
+    <p style="margin-top:32px;">
+      Have a question about your invoice instead? <a href="index.html#contact">Contact us</a> and
+      we'll help directly.
+    </p>
+
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="index.html" class="logo" style="margin-bottom:14px; text-decoration:none; display:inline-flex;">THE PROPERTY TAX DEPT<span>LLC</span></a>
+        <p style="color:var(--ink-soft); font-size:.9rem; max-width:34ch;">Illinois property tax appeal specialists serving Cook, Lake, DuPage, and Will County.</p>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:3124889050">(312) 488-9050</a></li>
+          <li><a href="index.html#contact">6446 N. Sheridan Rd., Suite 116<br>Chicago, Illinois 60626</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="index.html#about">About Us</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="pay.html">Pay My Invoice</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="legal-disclosures.html">Legal Disclosures</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 The Property Tax Department, LLC. All rights reserved.</span>
+      <span>You only pay if we save you money. 100% guaranteed.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const mainNav = document.getElementById('mainNav');
+  menuBtn.addEventListener('click', () => mainNav.classList.toggle('open'));
+</script>
+
+</body>
+</html>

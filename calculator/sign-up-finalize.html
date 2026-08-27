@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up - Final Details | The Property Tax Department, LLC</title>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  const PluginData = {
+    nextUrl: 'sign-up-signature.html',   // step 4
+    lookupUrl: 'index.html'              // step 1
+  };
+</script>
+
+<link rel="stylesheet" href="assets/main.css">
+<link rel="stylesheet" href="assets/sign-up.css">
+<link rel="stylesheet" href="assets/sign-up-finalize.css">
+<link rel="stylesheet" href="assets/site-chrome.css">
+</head>
+<body>
+
+<header class="ptd-site-header">
+  <a href="../index.html" class="ptd-site-logo">THE PROPERTY TAX DEPT<span>LLC</span></a>
+</header>
+
+<!-- IMPORTANT: main.js declares PriceShare and SessionStorageKeys used below -->
+<script src="assets/main.js"></script>
+
+<div id="page-content">
+  <div id="app-root" class="ptd-main">
+    <div class="main-form -sign-up">
+
+      <h2>You only pay us if we save you money!</h2>
+      <p>
+        There is absolutely no fee for our research, preparation or filing of your appeal with a
+        licensed Illinois attorney! If we save you money, our fee is only (( PriceShare )) of what
+        we save you in the first year! 100% of the subsequent savings goes directly in your pocket!
+      </p>
+
+      <h2>Final Details</h2>
+
+      <p class="error-msg" :class="{ hidden: !formErrors.prevSteps }" v-cloak>
+        You haven't completed the previous signup steps! <a :href="LookupUrl" href="index.html">Start sign up</a>.
+      </p>
+
+      <form @submit="validateAndSubmitForm" class="form-inner">
+
+        <div class="field-box">
+          <label class="label">Are you over the age of 65?</label>
+          <div class="radio-cont">
+            <input type="radio" id="over65-y" value="Y" v-model="formData.over65">
+            <label for="over65-y">Yes</label>
+            <input type="radio" id="over65-n" value="N" v-model="formData.over65">
+            <label for="over65-n">No</label>
+          </div>
+        </div>
+
+        <div class="field-box">
+          <label class="label">Is this your primary residence?</label>
+          <div class="radio-cont">
+            <input type="radio" id="primary-y" value="Y" v-model="formData.primaryResidence">
+            <label for="primary-y">Yes</label>
+            <input type="radio" id="primary-n" value="N" v-model="formData.primaryResidence">
+            <label for="primary-n">No</label>
+          </div>
+        </div>
+
+        <div class="field-box">
+          <label class="label">Has your property been purchased in the past three years?</label>
+          <div class="radio-cont">
+            <input type="radio" id="purchased-y" value="Y" v-model="formData.purchasedRecently">
+            <label for="purchased-y">Yes</label>
+            <input type="radio" id="purchased-n" value="N" v-model="formData.purchasedRecently">
+            <label for="purchased-n">No</label>
+            <input type="radio" id="purchased-u" value="U" v-model="formData.purchasedRecently">
+            <label for="purchased-u">I'm not sure</label>
+          </div>
+
+          <transition name="fade">
+            <div v-if="formData.purchasedRecently === 'Y'">
+              <label class="label" for="purchase-price">Purchase price</label>
+              <input id="purchase-price" type="text" v-model="formData.purchasePrice"
+                @blur="formatDollars('purchasePrice')" placeholder="$">
+
+              <label class="label" for="purchase-date">Purchase date (MM/DD/YYYY)</label>
+              <input id="purchase-date" type="text" v-model="formData.purchaseDate"
+                @blur="formatDate('purchaseDate')" placeholder="MM/DD/YYYY">
+            </div>
+          </transition>
+        </div>
+
+        <div class="field-box">
+          <label class="label">Have you had an appraisal in the past three years?</label>
+          <div class="radio-cont">
+            <input type="radio" id="appraised-y" value="Y" v-model="formData.appraisedRecently">
+            <label for="appraised-y">Yes</label>
+            <input type="radio" id="appraised-n" value="N" v-model="formData.appraisedRecently">
+            <label for="appraised-n">No</label>
+            <input type="radio" id="appraised-u" value="U" v-model="formData.appraisedRecently">
+            <label for="appraised-u">I'm not sure</label>
+          </div>
+
+          <transition name="fade">
+            <div v-if="formData.appraisedRecently === 'Y'">
+              <label class="label" for="appraisal-amt">Appraisal amount</label>
+              <input id="appraisal-amt" type="text" v-model="formData.appraisalAmt"
+                @blur="formatDollars('appraisalAmt')" placeholder="$">
+            </div>
+          </transition>
+        </div>
+
+        <div class="field-box">
+          <label class="label">Are you considering listing your property for sale in the next year?</label>
+          <div class="radio-cont">
+            <input type="radio" id="selling-y" value="Y" v-model="formData.consideringSelling">
+            <label for="selling-y">Yes</label>
+            <input type="radio" id="selling-n" value="N" v-model="formData.consideringSelling">
+            <label for="selling-n">No</label>
+            <input type="radio" id="selling-m" value="M" v-model="formData.consideringSelling">
+            <label for="selling-m">Maybe</label>
+            <input type="radio" id="selling-u" value="U" v-model="formData.consideringSelling">
+            <label for="selling-u">I'm not sure</label>
+          </div>
+        </div>
+
+        <label class="label" for="notes">Is there anything we should be aware of regarding your property? (optional)</label>
+        <textarea id="notes" v-model="formData.notes"></textarea>
+
+        <p class="error-msg -block" :class="{ hidden: !formErrors.details }" v-cloak>
+          Please answer all questions above before continuing.
+        </p>
+
+        <div class="submit-btn-cont">
+          <button type="submit" class="btn -orange">
+            Continue To Last Page
+            <span class="arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<footer class="ptd-site-footer">
+  © 2026 The Property Tax Department, LLC &middot; <a href="../index.html">Back to site</a>
+</footer>
+
+<script src="assets/sign-up-finalize.js"></script>
+</body>
+</html>

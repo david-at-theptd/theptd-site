@@ -1,0 +1,84 @@
+.ptd-main .overlay-inner.-warning {
+  padding: 0;
+}
+
+.ptd-main .overlay-inner.-warning h1 {
+  color: var(--white);
+  background-color: #dc3545;
+  margin: 0;
+}
+
+.ptd-main .overlay-inner.-warning h1,
+.ptd-main .overlay-inner.-warning > div {
+  padding: 25px;
+}
+
+.ptd-main .overlay-inner.-warning p { margin-top: 0; }
+
+.ptd-main .overlay-inner .pdf-cont {
+  max-height: 70vh;
+  width: 90%;
+  margin-left: 5%;
+  height: 872px;
+}
+
+.ptd-main .docs-list { padding: 5px 30px; }
+
+/* Hide links, since we can use the <button>s to show PDFs in a modal */
+.ptd-main .docs-list a { display: none; }
+
+.ptd-main .docs-list .link {
+  display: block;
+  text-align: left;
+}
+
+.ptd-main .signature-box {
+  display: block;
+  box-shadow: 1px 1px 6px rgba(0,0,0,0.25) inset;
+  width: 600px;
+  height: 150px;
+  max-width: 100%;
+}
+
+.ptd-main .signature-btns {
+  display: flex;
+  margin: 5px 0 15px 0;
+}
+
+.ptd-main .signature-btns button:first-of-type { margin-right: 5px; }
+
+.ptd-main .disclosure-panel {
+  background: var(--light-grey-background);
+  padding: 30px;
+  margin-top: 45px;
+}
+
+.ptd-main .disclosure-panel input { background: var(--white); }
+
+.ptd-main .disclosure-panel .radio-cont {
+  align-items: flex-start;
+  margin-top: 15px;
+}
+
+.ptd-main .disclosure-panel input[type="radio"] {
+  margin-top: 10px;
+}
+
+.ptd-main .disclosure-panel input[type="radio"] + label {
+  margin-left: 10px;
+}
+
+.ptd-main .disclosure-panel .lawyer-info { margin-left: 35px; }
+
+.ptd-main .checkboxes-cont { margin-top: 45px; }
+
+/**
+* Mobile styling
+*/
+@media (max-width: 800px) {
+  .ptd-main .disclosure-panel { padding: 30px 15px; }
+
+  /** Switch to links for docs-list, since embedding doesn't work */
+  .ptd-main .docs-list button.link { display: none; }
+  .ptd-main .docs-list a { display: block; }
+}

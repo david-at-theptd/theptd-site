@@ -1,0 +1,35 @@
+/**
+* CSS specific to the form signature page.
+* Overrides the main sign-up.css
+*/
+
+.ptd-main h2:not(:first-of-type) { margin-top: 30px; }
+
+.ptd-main .field-box { padding: 20px 15px; }
+
+.ptd-main .field-box .label { margin-top: 0; }
+
+/** Make every other field have a grey background */
+.ptd-main .field-box:nth-of-type(even) { background: var(--light-grey-background); }
+.ptd-main .field-box:nth-of-type(even) input { background: var(--white); }
+
+.ptd-main textarea {
+  min-width: 100%;
+}
+
+.ptd-main label, .ptd-main .label { margin-top: 15px; }
+
+.ptd-main label + p { margin-top: 0; }
+
+/**
+* Styling for <transition name="fade"> children
+*/
+.ptd-main .fade-enter-active, .ptd-main .fade-leave-active {
+  transition: opacity .3s, transform 0.3s;
+  transform-origin: top center;
+}
+
+.ptd-main .fade-enter, .ptd-main .fade-leave-to {
+  opacity: 0;
+  transform: scaleY(0);
+}

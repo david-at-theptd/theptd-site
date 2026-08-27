@@ -1,0 +1,204 @@
+/**
+* Styling specific to the sign-up pages
+*/
+
+.ptd-main .main-form.-sign-up h2 {
+  font-weight: 600;
+  color: var(--text-blue);
+}
+
+.ptd-main h2, .ptd-main .form-inner { margin-top: 0; }
+
+.ptd-main .main-form,
+.ptd-main .form-limited { width: 1000px; }
+
+.ptd-main .main-form { padding: 50px; }
+
+.ptd-main .main-form .form-inner {
+  width: 100%;
+  max-width: 1000px;
+  margin: 30px auto 0;
+}
+
+.ptd-main .msg-notice {
+  background-color: var(--light-blue);
+  padding: 10px;
+  margin: 0 0 30px;
+}
+
+#no-address-err { margin-bottom: 15px; }
+
+.ptd-main .form-row { display: flex; }
+.ptd-main .form-row.-payment-main { min-height: 180px; }
+.ptd-main .form-row:not(:first-of-type) { margin-top: 30px; }
+
+.ptd-main .form-row.-with-inlines:not(:first-of-type) { margin-top: 0px; }
+
+.ptd-main .form-row > * { flex: 1 1 0; }
+
+.field-cont input { width: 100%; }
+.field-cont + .field-cont { margin-left: 40px; }
+
+/* The address and pin row has custom sizing so the address is bigger */
+.field-cont.-address { flex-basis: 70%; }
+.field-cont.-address { flex-basis: 30%; }
+
+.ptd-main .checkbox-row {
+  display: flex;
+  margin-top: 15px;
+  align-items: center;
+}
+
+.ptd-main .checkbox-row input {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
+  margin-left: 0;
+}
+
+.ptd-main .checkbox-row label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.phone-cont {
+  display: flex;
+  border: solid 1px var(--mid-grey);
+}
+
+.ptd-main .phone-labels { display: flex; }
+
+.ptd-main .phone-labels label:first-of-type { margin-right: 20px; }
+
+.ptd-main .phone-cont input { border: none; }
+
+.ptd-main .phone-cont input { border-left: solid 1px var(--mid-grey); }
+
+/**
+* Referral code with Apply button
+*/
+.ptd-main .referral-cont { position: relative; }
+.ptd-main .referral-cont input { padding-right: 110px; }
+
+.ptd-main .referral-cont button {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  bottom: 3px;
+  width: 100px;
+  padding: 0;
+}
+
+.ptd-main .referral-complete { margin: 15px 0; }
+
+.ptd-main .savings-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.ptd-main .savings-price, .savings-price span {
+  color: var(--design-orange);
+}
+
+.ptd-main .totals {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ptd-main .totals dl { width: 100%; }
+
+.ptd-main .totals .term-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.ptd-main .totals .term-row.-total {
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+.ptd-main .totals .term-row.-total dt {
+  text-transform: uppercase;
+  color: var(--design-orange-dark);
+}
+
+.ptd-main .vertical-line {
+  border-left: solid 2px var(--design-blue);
+  width: 0;
+  margin: 0 60px;
+  flex: 0;
+  align-self: stretch;
+}
+
+.ptd-main .submit-btn-cont {
+  margin-top: 30px;
+}
+
+.ptd-main .submit-btn-cont .error-msg {
+  width: 400px;
+  margin: 0px auto 10px auto;
+  text-align: center;
+}
+
+.ptd-main .submit-btn-cont .btn[type="submit"] { margin-top: 0; }
+
+.ptd-main .btn[type="submit"],
+.ptd-main .loading-text {
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ptd-main .terms-cont {
+  height: 300px;
+  overflow: auto;
+  border: solid 1px grey;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding: 15px;
+}
+
+.ptd-main .terms-cont h2 { margin: 0; }
+
+/**
+* Custom scrollbar styling for terms container
+*/
+.ptd-main .terms-cont::-webkit-scrollbar { width: 15px; }
+.ptd-main .terms-cont::-webkit-scrollbar-track { background: none; }
+.ptd-main .terms-cont::-webkit-scrollbar-thumb {
+  background: var(--design-blue);
+}
+
+/**
+* Mobile styling - make form one column and simplify totals
+*/
+@media (max-width: 1000px) {
+  .ptd-main .main-form { padding: 15px 15px 50px 15px; }
+
+  .ptd-main .form-row:first-of-type .field-cont:first-of-type,
+  .ptd-main .form-row:not(:first-of-type) {
+    margin-top: 0;
+  }
+
+  .ptd-main .form-row {
+    flex-direction: column;
+    margin: 0;
+  }
+
+  .field-cont + .field-cont {
+    margin-left: 0;
+  }
+
+  .field-cont { margin-top: 15px; }
+
+  .field-cont.-address, .field-cont.-pin { flex-basis: 0; }
+
+  .ptd-main .totals { justify-content: flex-end; }
+  .ptd-main .totals .vertical-line { display: none; }
+
+  .ptd-main .btn[type="submit"], .submit-btn-cont .error-msg { width: 100%; }
+
+  .ptd-main #pay-btn { padding-right: 63px; }
+}

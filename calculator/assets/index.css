@@ -1,0 +1,142 @@
+/**
+* Styling specific to the index.html (the check your taxes page)
+*/
+
+.main-form.-check {
+  top: -150px;
+}
+
+.house-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: -20px;
+  right: 0;
+  left: 0;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  background-color: var(--design-blue);
+  z-index: 1;
+  border-radius: 100%;
+}
+
+.house-icon img {
+  display: block;
+  width: 30px;
+}
+
+.ptd-main h1.check-header {
+  font-size: 2.8rem;
+  color: var(--white);
+  margin: 100px 0 200px 0;
+}
+.check-header .bold { color: var(--design-orange); }
+
+.main-form.-check h2 { color: var(--design-blue); }
+.main-form.-check h2 .bold { color: var(--text-color); }
+
+/**
+* Style the autocomplete plugin dropdown
+*/
+.ui-autocomplete.ui-menu { box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+
+.ui-autocomplete.ui-menu .ui-menu-item-wrapper {
+  padding: 10px;
+  background-color: var(--white);
+}
+
+.ui-autocomplete.ui-menu .ui-menu-item-wrapper.ui-state-active {
+  background-color: var(--design-blue);
+  border-color: transparent;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+hr { margin: 30px 0; }
+
+.back-btn {
+  margin: 15px auto 0 auto;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.savings-intro {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0 5rem;
+  margin-top: 50px;
+}
+
+.savings-cont p { padding: 0 50px; }
+
+.graph {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 200px;
+  padding: 0 50px;
+  /* Lightweight stand-in for the original lines-background.png graph paper texture */
+  background-image: repeating-linear-gradient(to top, rgba(0,0,0,0.06) 0, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 30px);
+  background-position: bottom;
+  border-bottom: solid 5px var(--graph-black);
+}
+
+.graph-bar {
+  position: relative;
+  padding-top: 10px;
+  flex: 0 0 45%;
+  font-size: 0.7rem;
+  font-weight: 600;
+  height: 0;
+  transition: height 0.5s;
+  overflow: hidden;
+}
+.graph-bar.-green { background-color: var(--graph-green); }
+.graph-bar.-red { background-color: var(--graph-red); }
+
+.graph-bar .inner-text, .graph-bar .outer-text { text-align: center; }
+
+.graph-bar .outer-text {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+}
+
+.graph-bar .outer-text, .graph-bar .outer-text * {
+  color: var(--graph-green);
+}
+
+.graph-bar .price { font-size: 1.25rem; }
+
+.graph-bar .inner-text, .graph-bar .inner-text * {
+  color: var(--white);
+}
+
+.sign-up-btn {
+  text-transform: uppercase;
+  font-size: 20px;
+  margin-top: 30px;
+}
+
+@media (max-width: 800px) {
+  .ptd-main h1.check-header {
+    font-size: 1.75rem;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .check-header br { display: none; }
+
+  .savings-cont p, .no-savings-cont p { padding: 0; }
+
+  .sign-up-btn { padding: 15px 48px 15px 0px; }
+
+  .graph { padding: 0 15px; }
+}

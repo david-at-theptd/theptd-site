@@ -1,0 +1,456 @@
+/**
+* Common styling for all registration pages
+*/
+
+/* Setup global color variables */
+:root {
+  --design-orange: #fa8420;
+  --design-orange-dark: #d56e1b;
+  --design-blue: #2c9ed3;
+  --design-blue-dark: #1e7999;
+  --white: #FFFFFF;
+  --light-grey: #f5f5f5;
+  --mid-grey: #e6e6e6;
+  --grey-background: #eeeeee;
+  --light-grey-background: #f5f5f5;
+  --light-blue: #d5f6ff;
+
+  --background-red: #dc3545;
+  --background-red-dark: #b02533;
+
+  --text-color: #0a2434; /* blue-ish black */
+  --text-color-light: #6b6b6b; /* mid grey */
+  --text-blue: #00457a;
+
+  --footer-height: 200px;
+  --footer-blue: #002440;
+  --footer-blue-dark: #001e36;
+
+  --error-red-dark: #c50101;
+  --error-red-light: #ffd5d5;
+
+  --loading-light-grey: #757575;
+
+  --graph-red: #e74c3c;
+  --graph-green: #2ecc71;
+  --graph-black: #000000;
+}
+
+/** Fade text in and out for loading */
+@keyframes loading-fade {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+html, body {
+  font-size: 16px;
+}
+
+/**
+* IMPORTANT: Scope all CSS to .ptd-main to ensure we don't style code outside
+* of the plugin. Even for our own CSS classes, we should assume collisions are
+* possible.
+*/
+.ptd-main *,
+.ptd-main input,
+.ptd-main button,
+.ptd-main button[type="submit"] {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.5;
+}
+
+.ptd-main *:focus {
+  outline: solid 2px var(--design-blue) !important;
+  outline-offset: 0 !important;
+  transition: none;
+}
+
+.ptd-main body,
+.ptd-main h1,
+.ptd-main h2,
+.ptd-main h3,
+.ptd-main h4,
+.ptd-main h5,
+.ptd-main h6,
+.ptd-main p,
+.ptd-main span,
+.ptd-main label,
+.ptd-main input {
+  color: var(--text-color);
+}
+
+.ptd-main h2 { font-size: 1.5rem; }
+
+.ptd-main a, .ptd-main .link {
+  color: #007db7;
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.ptd-main a:hover,
+.ptd-main a:focus,
+.ptd-main .link:hover,
+.ptd-main .link:focus { color: #005e8a; }
+
+.ptd-main a:visited,
+.ptd-main .link:visited { color: #7400da; }
+
+.ptd-main a:visited:focus,
+.ptd-main .link:visited:focus,
+.ptd-main a:visited:hover,
+.ptd-main .link:visited:hover { color: #6102b5; }
+
+a .new-tab, .link .new-tab {
+  display: inline;
+  position: relative;
+  top: 3px;
+  margin-left: 3px;
+  width: 16px;
+}
+
+.inner-cont {
+  width: 90%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.ptd-main .hidden { display: none; }
+
+.ptd-main [v-cloak] { display: none; }
+
+.ptd-main h1, .ptd-main h2 { font-weight: 500; }
+
+.ptd-main .button-row {
+  display: flex;
+  margin-top: 30px;
+}
+
+.ptd-main .button-row > button + button { margin-left: 10px; }
+
+.ptd-main .inner-cont.-logos-cont {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ptd-main .inner-cont.-logos-cont .bbb-logo {
+  height: 60px;
+}
+
+.ptd-main input, .ptd-main textarea, .ptd-main select { font-size: 1rem; }
+
+.ptd-main input:disabled { opacity: 0.7; }
+
+.ptd-main input, .ptd-main textarea {
+  background-color: var(--light-grey);
+  border: solid 1px var(--mid-grey);
+  padding: 15px;
+  max-width: 100%;
+  border-radius: 0;
+}
+
+.ptd-main textarea {
+  width: 800px;
+  min-height: 150px;
+}
+
+.ptd-main input[type="radio"], .ptd-main input[type="checkbox"] { appearance: revert; box-shadow: none; }
+
+.ptd-main input[type="radio"]::before, .ptd-main input[type="checkbox"]::before { background: none; }
+
+.ptd-main select {
+  border: solid 1px var(--mid-grey);
+  color: var(--text-color);
+  background: var(--white);
+  padding: 0 15px;
+}
+
+.ptd-main input:not([type="checkbox"]):focus {
+  box-shadow: inset 2px 2px 5px var(--mid-grey);
+}
+
+.ptd-main .radio-cont {
+  display: flex;
+  align-items: center;
+}
+
+.ptd-main .radio-cont input { margin: 0; }
+.ptd-main .radio-cont label {
+  margin: 0 10px 0 0;
+  padding: 0 15px 0 10px;
+}
+
+.ptd-main .radio-cont label { font-weight: normal; }
+
+.ptd-main input.full-width,
+.ptd-main textarea.full-width { width: 100%; }
+
+.ptd-main label, .ptd-main .label {
+  display: block;
+  color: var(--footer-blue);
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.ptd-main .center { text-align: center; }
+.ptd-main .bold { font-weight: bold; }
+
+.ptd-main .main-form {
+  position: relative;
+  top: -100px;
+  background-color: var(--white);
+  margin: 0 auto 70px auto;
+  padding: 50px 100px 100px;
+  box-shadow: rgba(0,0,0,0.2) 0px 2px 50px;
+}
+
+.ptd-main .main-form,
+.ptd-main .form-limited {
+  width: 700px;
+  max-width: 100%;
+}
+
+.ptd-main button.btn {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  border: none;
+  border-radius: 0;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.2s, opacity 0.3s;
+}
+
+.ptd-main button.btn::before { display: none; }
+.ptd-main button.btn::after { display: none; }
+
+.ptd-main .btn[disabled] { cursor: default; }
+
+.ptd-main .btn.-mini {
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.ptd-main .btn, .ptd-main .btn span { color: var(--white); }
+
+.ptd-main .btn[type="submit"] { margin-top: 15px; }
+
+.ptd-main .btn.-full-width { width: 100%; }
+
+.ptd-main .btn.-orange {
+  background-color: var(--design-orange);
+  outline-color: var(--design-orange) !important;
+}
+
+.ptd-main .btn.-orange:not([disabled]):hover,
+.ptd-main .btn.-orange:focus,
+.ptd-main .btn.-orange .arrow {
+  background: var(--design-orange-dark);
+}
+
+.ptd-main .btn.-blue {
+  background-color: var(--design-blue);
+  outline-color: var(--design-blue) !important;
+}
+
+.ptd-main .btn.-blue:not([disabled]):hover,
+.ptd-main .btn.-blue:focus,
+.ptd-main .btn.-blue .arrow {
+  background: var(--design-blue-dark);
+}
+
+.ptd-main .btn.-red {
+  background-color: var(--background-red);
+  outline-color: var(--background-red) !important;
+}
+
+.ptd-main .btn.-red:not([disabled]):hover,
+.ptd-main .btn.-red:focus,
+.ptd-main .btn.-red .arrow {
+  background: var(--background-red-dark);
+}
+
+.ptd-main .btn.-outline {
+  background: none;
+  transition: color 0.2s, border-color 0.2s, opacity 0.3s;
+  color: var(--text-color-light);
+  border: solid 2px var(--text-color-light);
+}
+
+.ptd-main .btn.-outline:not([disabled]):hover,
+.ptd-main .btn.-outline:focus {
+  color: var(--text-color);
+  border-color: var(--text-color);
+}
+
+.ptd-main .btn .arrow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 48px;
+  padding: 0;
+  font-size: 2rem;
+  color: var(--white);
+}
+
+.ptd-main .loading {
+  display: inline;
+  transition: right 0.5s, opacity 0.5s;
+  width: 30px;
+  position: absolute;
+  right: 60px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  animation: spin 1s linear infinite;
+}
+
+.ptd-main .loading.hidden {
+  right: 0;
+  opacity: 0;
+}
+
+.ptd-main button.tooltip {
+  position: relative;
+  font-weight: bold;
+  background: var(--design-blue);
+  border: none;
+  border-radius: 100px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  color: var(--white);
+}
+
+.ptd-main button.tooltip:hover,
+.ptd-main button.tooltip:focus {
+  background-color: var(--design-blue-dark);
+}
+
+.ptd-main button.tooltip:focus {
+  outline: none;
+  box-shadow: 0px 0px 0px 2px var(--design-blue);
+}
+
+.ptd-main .tooltip-text {
+  width: 500px;
+  max-width: 80vw;
+  background: var(--footer-blue);
+  text-align: left;
+  z-index: 10;
+  position: absolute;
+  padding: 0px 15px;
+  top: 15px;
+  right: 5px;
+  box-shadow: 2px 3px 5px rgba(0,0,0,0.5);
+}
+
+.ptd-main .tooltip-text p { color: var(--white); }
+
+.ptd-main .inline-error {
+  color: var(--error-red-dark);
+  font-size: 14px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.ptd-main .inline-error.-hidden { visibility: hidden; }
+.ptd-main .inline-error.-invis.-hidden { display: none; }
+
+.ptd-main .inline-error a {
+  color: var(--error-red-dark);
+  font-weight: 600;
+}
+
+.ptd-main .error-msg {
+  color: var(--error-red-dark);
+  background: var(--error-red-light);
+  padding: 5px 10px;
+  margin: 5px 0;
+  opacity: 1;
+}
+
+.ptd-main .error-msg.-hidden { display: none; }
+.ptd-main .error-msg.-block {
+  margin-top: 30px;
+  padding: 15px;
+}
+
+.ptd-main .error-msg a {
+  color: var(--error-red-dark);
+  font-weight: 600;
+}
+
+.ptd-main .loading-text {
+  animation: loading-fade 2s;
+  animation-iteration-count: infinite;
+  background-color: var(--mid-grey);
+  padding: 10px;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.ptd-main .overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(5px);
+}
+
+.ptd-main .overlay .overlay-inner {
+  width: 800px;
+  max-width: 90%;
+  max-height: 90%;
+  padding: 25px;
+  background-color: var(--white);
+}
+
+.ptd-main .overlay .overlay-inner.-small { width: 500px; }
+
+.ptd-main .overlay h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.ptd-main .overlay-inner input {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 800px) {
+  .ptd-main h1 { font-size: 2rem; }
+  .ptd-main h2 { font-size: 1.4rem; }
+
+  .ptd-main .main-form {
+    padding: 30px;
+    margin-bottom: 20px;
+  }
+
+  .ptd-main .button-row { flex-direction: column; }
+  .ptd-main .button-row > button + button { margin: 10px 0 0 0; }
+
+  .ptd-main .form-row > * { flex: none; }
+
+  .ptd-main .inline-error.-hidden { display: none; }
+}

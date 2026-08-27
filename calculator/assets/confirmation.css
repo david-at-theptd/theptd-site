@@ -1,0 +1,9 @@
+.ptd-main .main-form { width: 1000px; }
+.ptd-main .main-form h2 { font-weight: 600; }
+
+.ptd-main .big-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 0;
+}
