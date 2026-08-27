@@ -20,13 +20,6 @@ const ExpDateRegex = /^\d{2}\/\d{2}\/\d{4}$/; // Matches MM/DD/YYYY exactly
 const ShortDateRegex = /^\d{2}\/\d{2}\/\d{2}$/; // Matches MM/DD/YY exactly
 const TwoNamesRegex = /[a-zA-Z][a-zA-Z]\s[a-zA-Z][a-zA-Z]/; // Requires first and last name
 
-/** The minimum number of points required for a valid drawn signature. This
-just needs to filter out a literal single tap/click - real signatures, even
-very quick or simple ones, clear this easily. (Lowered from the original 10,
-which was rejecting legitimate short signatures and showing the same error
-as a truly empty signature pad, making it look like a bug.) */
-const MinSignaturePoints = 3;
-
 /** The size we consider mobile, under which we clear the signature pad on
 resize */
 const MobileWidth = 800;
@@ -364,11 +357,12 @@ function validateAndSubmitForm(submitEvent) {
   // proceeded to type their signature. Split it out into two separate checks. David Jo - 3/23/2022
   this.formErrors.signature = false;
 
-  if (!signaturePad.isEmpty() && !hasDrawnSignature()) {
-    this.formErrors.signature = true;
-    anyErrors = true;
-    console.log('Invalid drawn signature');
-  }
+  // NOTE: We used to also check hasDrawnSignature() (a point-count threshold)
+  // here, but signature_pad filters/simplifies points internally for smooth
+  // rendering, so a perfectly real signature can end up with very few
+  // recorded points depending on how it was drawn. That made this check
+  // unreliably reject genuine signatures. signaturePad.isEmpty() is the
+  // library's own reliable answer to "was anything drawn" - trust it alone.
 
   if (vueApp.otherFields.typedSignature && !hasValidTypedSignature()) {
     this.formErrors.signature = true;
@@ -392,13 +386,6 @@ function validateAndSubmitForm(submitEvent) {
   if (!anyErrors && signupData) {
     submitSignup();
   }
-}
-
-function hasDrawnSignature() {
-  // Each stroke is a separate array of point groups, so we combine those to get
-  // an array of all point groups, which we then count
-  const pointGroupsCount = [].concat.apply([], signaturePad.toData()).length;
-  return !signaturePad.isEmpty() && pointGroupsCount > MinSignaturePoints;
 }
 
 function hasValidTypedSignature(){
