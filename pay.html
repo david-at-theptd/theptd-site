@@ -359,17 +359,24 @@
       // call has to happen server-side (that's what CreatePaymentIntentUrl
       // is for) since creating a PaymentIntent requires your Stripe SECRET
       // key, which must never be exposed in browser-side JS.
+      //
+      // NOTE: This is sent as simple form-encoded data (like insertClient.php
+      // already expects, readable via PHP's $_POST) rather than JSON. A JSON
+      // request triggers a CORS preflight (an OPTIONS request) that most
+      // simple PHP endpoints don't handle, which fails as a generic
+      // "Failed to fetch" in the browser before your PHP code ever runs.
+      // Form-encoded POSTs don't trigger a preflight at all.
+      const intentFormData = new URLSearchParams();
+      intentFormData.append('amount', invoiceAmount);
+      intentFormData.append('invoiceNumber', document.getElementById('invoiceNumber').value.trim());
+      intentFormData.append('firstName', document.getElementById('firstName').value.trim());
+      intentFormData.append('lastName', document.getElementById('lastName').value.trim());
+      intentFormData.append('email', document.getElementById('email').value.trim());
+      intentFormData.append('pin', document.getElementById('pin').value.trim());
+
       const intentResponse = await fetch(CreatePaymentIntentUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: invoiceAmount,
-          invoiceNumber: document.getElementById('invoiceNumber').value.trim(),
-          firstName: document.getElementById('firstName').value.trim(),
-          lastName: document.getElementById('lastName').value.trim(),
-          email: document.getElementById('email').value.trim(),
-          pin: document.getElementById('pin').value.trim()
-        })
+        body: intentFormData
       });
       const intentData = await intentResponse.json();
 
