@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Confirmation | The Property Tax Department, LLC</title>
+<meta name="description" content="Your payment has been received.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .confirm-panel{ max-width: 640px; margin: 0 auto; }
+  .confirm-loading, .confirm-error{ text-align: center; padding: 48px 0; color: var(--ink-soft); }
+  .confirm-error{ color: var(--stamp); }
+  .confirm-details{
+    background: var(--card); border: 1px solid var(--line); border-radius: 2px;
+    padding: 8px 36px; margin-top: 28px;
+  }
+  .confirm-row{
+    display: flex; justify-content: space-between; gap: 24px;
+    padding: 16px 0; border-bottom: 1px solid var(--line);
+  }
+  .confirm-row:last-child{ border-bottom: none; }
+  .confirm-row dt{ font-weight: 600; color: var(--ink); }
+  .confirm-row dd{ margin: 0; color: var(--ink-soft); text-align: right; }
+  .hidden{ display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav" id="navBar">
+    <a href="index.html" class="logo" style="text-decoration:none;">THE PROPERTY TAX DEPT<span>LLC</span></a>
+    <nav id="mainNav">
+      <ul>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#deadlines">Appeal Deadlines</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="index.html#testimonials">Testimonials</a></li>
+        <li><a href="pay.html">Pay</a></li>
+        <li><a href="index.html#contact">Contact Us</a></li>
+        <li><a href="calculator/index.html" class="nav-cta">Sign Up</a></li>
+      </ul>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="wrap">
+    <div class="eyebrow">Existing clients</div>
+    <h1>Payment Confirmation</h1>
+  </div>
+</div>
+
+<section>
+  <div class="wrap confirm-panel">
+
+    <div id="confirmLoading" class="confirm-loading">
+      Retrieving your payment information&hellip;
+    </div>
+
+    <div id="confirmError" class="confirm-error hidden">
+      <p>We couldn't retrieve information about your payment. If you completed a payment, don't worry - it still went through.</p>
+      <p>Please contact us at <a href="mailto:info@theptd.com">info@theptd.com</a> if you have any questions.</p>
+    </div>
+
+    <div id="confirmSuccess" class="hidden">
+      <h2>We got your payment!</h2>
+      <p style="color:var(--ink-soft);">
+        Thank you for your payment. You will receive a copy of this receipt at the email address below.
+      </p>
+      <p style="color:var(--ink-soft);">
+        Questions? Send us an email at <a href="mailto:info@theptd.com">info@theptd.com</a>. We are always happy to help.
+      </p>
+
+      <dl class="confirm-details">
+        <div class="confirm-row"><dt>Confirmation Code</dt><dd id="ccConfirmationCode"></dd></div>
+        <div class="confirm-row"><dt>Invoice Number</dt><dd id="ccInvoiceNumber"></dd></div>
+        <div class="confirm-row"><dt>Amount</dt><dd id="ccAmount"></dd></div>
+        <div class="confirm-row"><dt>Property Address</dt><dd id="ccAddress"></dd></div>
+        <div class="confirm-row"><dt>Name</dt><dd id="ccName"></dd></div>
+        <div class="confirm-row"><dt>Email</dt><dd id="ccEmail"></dd></div>
+      </dl>
+    </div>
+
+    <div id="confirmNotSucceeded" class="confirm-error hidden">
+      <p>Your payment status is: <strong id="ccStatus"></strong>. If you believe this is an error, please contact us at <a href="mailto:info@theptd.com">info@theptd.com</a>.</p>
+    </div>
+
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="index.html" class="logo" style="margin-bottom:14px; text-decoration:none; display:inline-flex;">THE PROPERTY TAX DEPT<span>LLC</span></a>
+        <p style="color:var(--ink-soft); font-size:.9rem; max-width:34ch;">Illinois property tax appeal specialists serving Cook, Lake, DuPage, and Will County.</p>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:3124889050">(312) 488-9050</a></li>
+          <li><a href="index.html#contact">6446 N. Sheridan Rd., Suite 116<br>Chicago, Illinois 60626</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="index.html#about">About Us</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="pay.html">Pay My Invoice</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="legal-disclosures.html">Legal Disclosures</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 The Property Tax Department, LLC. All rights reserved.</span>
+      <span>You only pay if we save you money. 100% guaranteed.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const mainNav = document.getElementById('mainNav');
+  menuBtn.addEventListener('click', () => mainNav.classList.toggle('open'));
+
+  // Confirmed live and working as-is (same backend as the original
+  // theptd.com/payment/success.html page)
+  const SuccessInfoUrl =
+    'https://propertytax123.com/rackforms/output/forms/payments/getStripeSuccessPaymentInfo.php';
+
+  function getQueryParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
+  function showPanel(id) {
+    ['confirmLoading', 'confirmError', 'confirmSuccess', 'confirmNotSucceeded'].forEach(panelId => {
+      document.getElementById(panelId).classList.toggle('hidden', panelId !== id);
+    });
+  }
+
+  async function fetchPaymentInfo(sessionId) {
+    try {
+      const response = await fetch(SuccessInfoUrl + '?id=' + encodeURIComponent(sessionId));
+      const text = await response.text();
+      const data = JSON.parse(text);
+      const info = Array.isArray(data) ? data[0] : data;
+
+      if (!info || !info.status) {
+        showPanel('confirmError');
+        return;
+      }
+
+      if (info.status !== 'succeeded') {
+        document.getElementById('ccStatus').textContent = info.status;
+        showPanel('confirmNotSucceeded');
+        return;
+      }
+
+      document.getElementById('ccConfirmationCode').textContent = info.confirmationCode || '';
+      document.getElementById('ccInvoiceNumber').textContent = info.invoiceNumber || '';
+      document.getElementById('ccAmount').textContent = '$' + (info.paymentAmount || '');
+      document.getElementById('ccAddress').textContent = info.address || '';
+      document.getElementById('ccName').textContent =
+        [info.firstName, info.lastName].filter(Boolean).join(' ');
+      document.getElementById('ccEmail').textContent = info.email || '';
+
+      showPanel('confirmSuccess');
+    }
+    catch (error) {
+      showPanel('confirmError');
+    }
+  }
+
+  const sessionId = getQueryParam('id');
+
+  if (sessionId) {
+    fetchPaymentInfo(sessionId);
+  }
+  else {
+    showPanel('confirmError');
+  }
+</script>
+
+</body>
+</html>
