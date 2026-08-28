@@ -281,16 +281,32 @@
         throw new Error('not found');
       }
 
-      if (!data || !data.firstName) {
+      if (!data || !data.first_name) {
         throw new Error('not found');
       }
 
+      // The real backend uses "VALID" for a payable invoice. Any other
+      // status (already paid, closed, etc.) shouldn't proceed to payment,
+      // even though the invoice itself was found.
+      if (data.invoice_status && data.invoice_status !== 'VALID') {
+        errorEl.textContent = 'This invoice is ' + data.invoice_status.toLowerCase()
+          + ' and cannot be paid online right now. Please contact us below.';
+        errorEl.classList.add('show');
+        return;
+      }
+
       // Populate step 2 from the lookup response
-      document.getElementById('firstName').value = data.firstName || '';
-      document.getElementById('lastName').value = data.lastName || '';
+      document.getElementById('firstName').value = data.first_name || '';
+      document.getElementById('lastName').value = data.last_name || '';
       document.getElementById('address').value = data.address || '';
-      document.getElementById('email').value = data.email || '';
-      document.getElementById('pin').value = propertyPIN;
+      document.getElementById('email').value = data.email_address || '';
+      document.getElementById('pin').value = data.pin || propertyPIN;
+
+      // The backend already knows the amount due - fill it in rather than
+      // asking the user to type it in themselves
+      if (data.payment_amount) {
+        document.getElementById('invoiceAmount').value = '$' + data.payment_amount;
+      }
 
       // Reveal steps 2 and 3
       document.getElementById('step2').classList.add('active');
