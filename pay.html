@@ -8,6 +8,48 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+  /* Page-specific styles for the embedded payment flow */
+  .pay-steps{ max-width: 640px; margin: 0 auto; }
+  .pay-step{
+    background: var(--card); border: 1px solid var(--line); border-radius: 2px;
+    padding: 36px; margin-bottom: 24px; opacity: 0.45; pointer-events: none;
+    transition: opacity .2s ease;
+  }
+  .pay-step.active{ opacity: 1; pointer-events: auto; }
+  .pay-step-head{ display:flex; align-items:center; gap:14px; margin-bottom:8px; }
+  .pay-step-num{
+    font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:.78rem;
+    width:28px; height:28px; border-radius:50%; background:var(--ink); color:var(--paper-light);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .pay-step.active .pay-step-num{ background: var(--stamp); }
+  .pay-step h2{ font-size:1.15rem; margin:0; }
+  .pay-step-desc{ color: var(--ink-soft); font-size:.9rem; margin: 0 0 22px 42px; }
+  .pay-field{ margin-bottom:16px; }
+  .pay-field label{ display:block; font-weight:600; font-size:.85rem; margin-bottom:6px; }
+  .pay-field input{
+    width:100%; padding:13px; border:1px solid var(--line); background:var(--paper-light);
+    font-family:'IBM Plex Sans', sans-serif; font-size:.95rem; border-radius:2px;
+  }
+  .pay-field input:read-only{ background: var(--paper); color: var(--ink-soft); }
+  .pay-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:560px){ .pay-row{ grid-template-columns:1fr; } }
+  #card-element{
+    padding:13px; border:1px solid var(--line); background:var(--paper-light); border-radius:2px;
+  }
+  .pay-error{
+    color: var(--stamp); background:#FBEAE7; border:1px solid rgba(166,64,47,0.3);
+    padding:12px 14px; border-radius:2px; font-size:.85rem; margin-top:14px; display:none;
+  }
+  .pay-error.show{ display:block; }
+  .pay-success{
+    text-align:center; padding:48px 36px; background:var(--card); border:1px solid var(--line);
+    border-radius:2px; display:none;
+  }
+  .pay-success.show{ display:block; }
+</style>
 </head>
 <body>
 
@@ -33,28 +75,110 @@
   <div class="wrap">
     <div class="eyebrow">Existing clients</div>
     <h1>Pay Invoice</h1>
+    <p>Thank you for your trust in The Property Tax Department, LLC — we're so happy to have saved you real money on your property tax bill.</p>
   </div>
 </div>
 
 <section>
-  <div class="wrap" style="max-width:700px;">
-    <div style="background:var(--card); border:1px solid var(--line); border-radius:2px; padding:48px; text-align:center;">
-      <h2 style="font-size:1.4rem; margin-bottom:20px;">Click below to be taken to our secure site to pay your Property Tax Department, LLC invoice:</h2>
+  <div class="wrap">
+    <div class="pay-steps" id="paySteps">
 
-      <p style="color:var(--ink-soft); margin-bottom:32px;">
-        Thank you for your trust in The Property Tax Department, LLC — we're so happy to have saved
-        you real money on your property tax bill. We look forward to working together in the future
-        to keep home ownership affordable in Illinois!
-      </p>
+      <!-- Step 1: Look up invoice -->
+      <div class="pay-step active" id="step1">
+        <div class="pay-step-head">
+          <div class="pay-step-num">1</div>
+          <h2>Look Up Your Invoice</h2>
+        </div>
+        <p class="pay-step-desc">Enter your invoice number and the property PIN of your appeal property. Both are located on your invoice.</p>
 
-      <a href="https://propertytax123.com/rackforms/output/forms/payments/index.php" class="btn btn-primary">
-        Click Here To Pay
-      </a>
+        <div class="pay-field">
+          <label for="invoiceNumber">Invoice Number</label>
+          <input id="invoiceNumber" name="invoiceNumber" type="text" placeholder="Enter your invoice number">
+        </div>
+        <div class="pay-field">
+          <label for="propertyPIN">Property PIN</label>
+          <input id="propertyPIN" name="propertyPIN" type="text" placeholder="With or without dashes">
+        </div>
+
+        <button type="button" id="lookUpInvoice" class="btn btn-primary" style="width:100%; justify-content:center;">
+          Look Up Invoice
+        </button>
+
+        <p class="pay-error" id="step1Error">We couldn't find an invoice matching that number and PIN. Please double-check both and try again, or contact us below.</p>
+      </div>
+
+      <!-- Step 2: Confirm info -->
+      <div class="pay-step" id="step2">
+        <div class="pay-step-head">
+          <div class="pay-step-num">2</div>
+          <h2>Confirm Your Information</h2>
+        </div>
+        <p class="pay-step-desc">If anything below is incorrect, please <a href="index.html#contact">contact us</a> before paying.</p>
+
+        <div class="pay-row">
+          <div class="pay-field">
+            <label for="firstName">First Name</label>
+            <input id="firstName" name="firstName" type="text">
+          </div>
+          <div class="pay-field">
+            <label for="lastName">Last Name</label>
+            <input id="lastName" name="lastName" type="text">
+          </div>
+        </div>
+        <div class="pay-field">
+          <label for="address">Property Address</label>
+          <input id="address" name="address" type="text">
+        </div>
+        <div class="pay-row">
+          <div class="pay-field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email">
+          </div>
+          <div class="pay-field">
+            <label for="pin">PIN</label>
+            <input id="pin" name="pin" type="text" readonly>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Pay -->
+      <div class="pay-step" id="step3">
+        <div class="pay-step-head">
+          <div class="pay-step-num">3</div>
+          <h2>Make Your Payment</h2>
+        </div>
+        <p class="pay-step-desc">We use Stripe for payment processing and never store your card information.</p>
+
+        <div class="pay-field">
+          <label for="invoiceAmount">Invoice Amount</label>
+          <input id="invoiceAmount" name="invoiceAmount" type="text" placeholder="$0.00">
+        </div>
+
+        <div class="pay-field">
+          <label for="card-element">Card Details</label>
+          <div id="card-element"></div>
+        </div>
+
+        <button type="button" id="Pay_Now" class="btn btn-primary" style="width:100%; justify-content:center;">
+          Pay Now
+        </button>
+
+        <p class="pay-error" id="step3Error">Something went wrong processing your payment. Please try again or contact us below.</p>
+
+        <p style="font-size:.78rem; color:var(--ink-soft); margin-top:16px; margin-bottom:0;">
+          You can pay with Visa, Mastercard, and Discover. Apple Pay is available in Safari; Google Pay is available in Chrome.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="pay-success" id="paySuccess">
+      <h2 style="margin-bottom:12px;">Payment received — thank you!</h2>
+      <p style="color:var(--ink-soft); margin:0;">A receipt has been sent to your email. We appreciate your trust in The Property Tax Department, LLC.</p>
     </div>
 
     <p style="text-align:center; color:var(--ink-soft); margin-top:32px;">
-      Have a question about your invoice instead? <a href="index.html#contact">Contact us</a> and
-      we'll help directly.
+      Have a question about your invoice instead? <a href="index.html#contact">Contact us</a> and we'll help directly.
     </p>
   </div>
 </section>
@@ -95,6 +219,170 @@
   const menuBtn = document.getElementById('menuBtn');
   const mainNav = document.getElementById('mainNav');
   menuBtn.addEventListener('click', () => mainNav.classList.toggle('open'));
+
+  /**
+  * ============================================================
+  * CONFIG - fill these in before this goes live
+  * ============================================================
+  * These match the exact field names and the exact lookup endpoint
+  * confirmed live on the real payment portal at propertytax123.com,
+  * so a compatible backend can reuse the same PHP with no changes.
+  */
+
+  // Confirmed live and working as-is (same backend, same field names)
+  const LookupInvoiceUrl =
+    'https://propertytax123.com/rackforms/output/forms/payments/execLookUpInvoice.php';
+
+  // TODO: You'll need to supply this - the endpoint that creates a Stripe
+  // PaymentIntent server-side (using your Stripe SECRET key) and returns
+  // its client_secret. This must run server-side; it can never be done
+  // from the browser. This is exactly the kind of small proxy-style PHP
+  // file you mentioned you can provide, same pattern as insertClient.php.
+  const CreatePaymentIntentUrl = 'REPLACE_WITH_YOUR_ENDPOINT.php';
+
+  // TODO: Your Stripe PUBLISHABLE key (safe to expose client-side - this
+  // is NOT your secret key). Found in your Stripe Dashboard under
+  // Developers > API keys.
+  const StripePublishableKey = 'pk_live_REPLACE_WITH_YOUR_KEY';
+
+  /**
+  * ============================================================
+  * Step 1: Look up invoice
+  * ============================================================
+  */
+  document.getElementById('lookUpInvoice').addEventListener('click', async () => {
+    const invoiceNumber = document.getElementById('invoiceNumber').value.trim();
+    const propertyPIN = document.getElementById('propertyPIN').value.trim();
+    const errorEl = document.getElementById('step1Error');
+
+    errorEl.classList.remove('show');
+
+    if (!invoiceNumber || !propertyPIN) {
+      errorEl.textContent = 'Please enter both your invoice number and property PIN.';
+      errorEl.classList.add('show');
+      return;
+    }
+
+    try {
+      const url = LookupInvoiceUrl + '?invoiceNumber=' + encodeURIComponent(invoiceNumber)
+        + '&propertyPIN=' + encodeURIComponent(propertyPIN);
+      const response = await fetch(url);
+      const text = await response.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+        if (Array.isArray(data)) { data = data[0]; }
+      }
+      catch (parseError) {
+        // The real backend returns plain text like "Error in page." for a
+        // non-matching invoice/PIN, not JSON - treat any non-JSON response
+        // as "not found" rather than guessing at its shape.
+        throw new Error('not found');
+      }
+
+      if (!data || !data.firstName) {
+        throw new Error('not found');
+      }
+
+      // Populate step 2 from the lookup response
+      document.getElementById('firstName').value = data.firstName || '';
+      document.getElementById('lastName').value = data.lastName || '';
+      document.getElementById('address').value = data.address || '';
+      document.getElementById('email').value = data.email || '';
+      document.getElementById('pin').value = propertyPIN;
+
+      // Reveal steps 2 and 3
+      document.getElementById('step2').classList.add('active');
+      document.getElementById('step3').classList.add('active');
+    }
+    catch (error) {
+      errorEl.textContent = "We couldn't find an invoice matching that number and PIN. Please double-check both and try again, or contact us below.";
+      errorEl.classList.add('show');
+    }
+  });
+
+  /**
+  * ============================================================
+  * Step 3: Stripe card element + payment
+  * ============================================================
+  */
+  let stripe, cardElement;
+
+  if (StripePublishableKey && !StripePublishableKey.includes('REPLACE')) {
+    stripe = Stripe(StripePublishableKey);
+    const elements = stripe.elements();
+    cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+  }
+
+  document.getElementById('Pay_Now').addEventListener('click', async () => {
+    const errorEl = document.getElementById('step3Error');
+    errorEl.classList.remove('show');
+
+    const invoiceAmount = document.getElementById('invoiceAmount').value.trim();
+
+    if (!invoiceAmount) {
+      errorEl.textContent = 'Please enter the invoice amount.';
+      errorEl.classList.add('show');
+      return;
+    }
+
+    if (!stripe || !cardElement) {
+      errorEl.textContent = 'Payment processing isn\'t configured yet on this page.';
+      errorEl.classList.add('show');
+      return;
+    }
+
+    const payButton = document.getElementById('Pay_Now');
+    payButton.disabled = true;
+    payButton.textContent = 'Processing…';
+
+    try {
+      // Ask your backend to create a PaymentIntent for this amount. This
+      // call has to happen server-side (that's what CreatePaymentIntentUrl
+      // is for) since creating a PaymentIntent requires your Stripe SECRET
+      // key, which must never be exposed in browser-side JS.
+      const intentResponse = await fetch(CreatePaymentIntentUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: invoiceAmount,
+          invoiceNumber: document.getElementById('invoiceNumber').value.trim(),
+          firstName: document.getElementById('firstName').value.trim(),
+          lastName: document.getElementById('lastName').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          pin: document.getElementById('pin').value.trim()
+        })
+      });
+      const intentData = await intentResponse.json();
+
+      const result = await stripe.confirmCardPayment(intentData.client_secret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: document.getElementById('firstName').value.trim() + ' '
+              + document.getElementById('lastName').value.trim(),
+            email: document.getElementById('email').value.trim()
+          }
+        }
+      });
+
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+
+      // Payment succeeded
+      document.getElementById('paySteps').style.display = 'none';
+      document.getElementById('paySuccess').classList.add('show');
+    }
+    catch (error) {
+      errorEl.textContent = error.message || 'Something went wrong processing your payment. Please try again or contact us below.';
+      errorEl.classList.add('show');
+      payButton.disabled = false;
+      payButton.textContent = 'Pay Now';
+    }
+  });
 </script>
 
 </body>
