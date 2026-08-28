@@ -36,9 +36,6 @@
   .pay-field input:read-only{ background: var(--paper); color: var(--ink-soft); }
   .pay-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   @media (max-width:560px){ .pay-row{ grid-template-columns:1fr; } }
-  #card-element{
-    padding:13px; border:1px solid var(--line); background:var(--paper-light); border-radius:2px;
-  }
   .pay-error{
     color: var(--stamp); background:#FBEAE7; border:1px solid rgba(166,64,47,0.3);
     padding:12px 14px; border-radius:2px; font-size:.85rem; margin-top:14px; display:none;
@@ -154,10 +151,6 @@
           <input id="invoiceAmount" name="invoiceAmount" type="text" placeholder="$0.00">
         </div>
 
-        <div class="pay-field">
-          <label for="card-element">Card Details</label>
-          <div id="card-element"></div>
-        </div>
 
         <button type="button" id="Pay_Now" class="btn btn-primary" style="width:100%; justify-content:center;">
           Pay Now
@@ -233,12 +226,10 @@
   const LookupInvoiceUrl =
     'https://propertytax123.com/rackforms/output/forms/payments/execLookUpInvoice.php';
 
-  // TODO: You'll need to supply this - the endpoint that creates a Stripe
-  // PaymentIntent server-side (using your Stripe SECRET key) and returns
-  // its client_secret. This must run server-side; it can never be done
-  // from the browser. This is exactly the kind of small proxy-style PHP
-  // file you mentioned you can provide, same pattern as insertClient.php.
-  const CreatePaymentIntentUrl = 'https://propertytax123.com/rackforms/output/forms/payments/getStripeId.php';
+  // Confirmed live and working as-is (same backend, same field names as
+  // the original site's payNow() function)
+  const GetStripeIdUrl =
+    'https://propertytax123.com/rackforms/output/forms/payments/getStripeId.php';
 
   // TODO: Your Stripe PUBLISHABLE key (safe to expose client-side - this
   // is NOT your secret key). Found in your Stripe Dashboard under
@@ -323,20 +314,15 @@
   * Step 3: Stripe card element + payment
   * ============================================================
   */
-  let stripe, cardElement;
-
-  if (StripePublishableKey && !StripePublishableKey.includes('REPLACE')) {
-    stripe = Stripe(StripePublishableKey);
-    const elements = stripe.elements();
-    cardElement = elements.create('card');
-    cardElement.mount('#card-element');
-  }
+  const stripe = Stripe(StripePublishableKey);
 
   document.getElementById('Pay_Now').addEventListener('click', async () => {
     const errorEl = document.getElementById('step3Error');
     errorEl.classList.remove('show');
 
     const invoiceAmount = document.getElementById('invoiceAmount').value.trim();
+    const address = document.getElementById('address').value.trim();
+    const email = document.getElementById('email').value.trim();
 
     if (!invoiceAmount) {
       errorEl.textContent = 'Please enter the invoice amount.';
@@ -344,69 +330,54 @@
       return;
     }
 
-    if (!stripe || !cardElement) {
-      errorEl.textContent = 'Payment processing isn\'t configured yet on this page.';
+    if (!address || !email) {
+      errorEl.textContent = 'Missing required data (address or email).';
       errorEl.classList.add('show');
       return;
     }
 
     const payButton = document.getElementById('Pay_Now');
     payButton.disabled = true;
-    payButton.textContent = 'Processing…';
+    payButton.textContent = 'Redirecting to Stripe\u2026';
 
     try {
-      // Ask your backend to create a PaymentIntent for this amount. This
-      // call has to happen server-side (that's what CreatePaymentIntentUrl
-      // is for) since creating a PaymentIntent requires your Stripe SECRET
-      // key, which must never be exposed in browser-side JS.
-      //
-      // NOTE: This is sent as simple form-encoded data (like insertClient.php
-      // already expects, readable via PHP's $_POST) rather than JSON. A JSON
-      // request triggers a CORS preflight (an OPTIONS request) that most
-      // simple PHP endpoints don't handle, which fails as a generic
-      // "Failed to fetch" in the browser before your PHP code ever runs.
-      // Form-encoded POSTs don't trigger a preflight at all.
-      const intentFormData = new URLSearchParams();
-      intentFormData.append('amount', invoiceAmount);
-      intentFormData.append('invoiceNumber', document.getElementById('invoiceNumber').value.trim());
-      intentFormData.append('firstName', document.getElementById('firstName').value.trim());
-      intentFormData.append('lastName', document.getElementById('lastName').value.trim());
-      intentFormData.append('email', document.getElementById('email').value.trim());
-      intentFormData.append('pin', document.getElementById('pin').value.trim());
+      // Same request shape as the original site's payNow() function -
+      // simple form-encoded POST, so no CORS preflight is triggered.
+      const sessionFormData = new URLSearchParams();
+      sessionFormData.append('totalFee', invoiceAmount);
+      sessionFormData.append('email', email);
+      sessionFormData.append('firstName', document.getElementById('firstName').value.trim());
+      sessionFormData.append('lastName', document.getElementById('lastName').value.trim());
+      sessionFormData.append('address', address);
+      sessionFormData.append('invoiceNumber', document.getElementById('invoiceNumber').value.trim());
+      sessionFormData.append('invoiceCode', document.getElementById('propertyPIN').value.trim());
 
-      const intentResponse = await fetch(CreatePaymentIntentUrl, {
+      const response = await fetch(GetStripeIdUrl, {
         method: 'POST',
-        body: intentFormData
+        body: sessionFormData
       });
-      const intentData = await intentResponse.json();
+      const text = await response.text();
+      const data = JSON.parse(text);
+      const sessionId = data[0].id;
 
-      const result = await stripe.confirmCardPayment(intentData.client_secret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            name: document.getElementById('firstName').value.trim() + ' '
-              + document.getElementById('lastName').value.trim(),
-            email: document.getElementById('email').value.trim()
-          }
-        }
-      });
+      // This only returns if there's an immediate error - a successful
+      // redirect navigates away from this page entirely, to Stripe's
+      // own hosted checkout page.
+      const result = await stripe.redirectToCheckout({ sessionId: sessionId });
 
       if (result.error) {
         throw new Error(result.error.message);
       }
-
-      // Payment succeeded
-      document.getElementById('paySteps').style.display = 'none';
-      document.getElementById('paySuccess').classList.add('show');
     }
     catch (error) {
-      errorEl.textContent = error.message || 'Something went wrong processing your payment. Please try again or contact us below.';
+      errorEl.textContent = error.message || 'Something went wrong starting checkout. Please try again or contact us below.';
       errorEl.classList.add('show');
       payButton.disabled = false;
       payButton.textContent = 'Pay Now';
     }
   });
-</script>
+
+  </script>
 
 </body>
 </html>
