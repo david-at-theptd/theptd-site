@@ -18,8 +18,9 @@
       <ul>
         <li><a href="index.html#about">About</a></li>
         <li><a href="index.html#deadlines">Appeal Deadlines</a></li>
-        <li><a href="index.html#faq">FAQ</a></li>
+        <li><a href="faq.html">FAQ</a></li>
         <li><a href="index.html#testimonials">Testimonials</a></li>
+        <li><a href="pay.html">Pay</a></li>
         <li><a href="index.html#contact">Contact Us</a></li>
         <li><a href="calculator/index.html" class="nav-cta">Sign Up</a></li>
       </ul>
@@ -31,41 +32,30 @@
 <div class="page-hero">
   <div class="wrap">
     <div class="eyebrow">Existing clients</div>
-    <h1>Pay My Invoice</h1>
-    <p>
-      Thank you for your trust in The Property Tax Department, LLC — we're glad we could save
-      you real money on your property tax bill. We look forward to working together in the future
-      to keep home ownership affordable in Illinois.
-    </p>
+    <h1>Pay Invoice</h1>
   </div>
 </div>
 
 <section>
-  <div class="wrap prose">
+  <div class="wrap" style="max-width:700px;">
+    <div style="background:var(--card); border:1px solid var(--line); border-radius:2px; padding:48px; text-align:center;">
+      <h2 style="font-size:1.4rem; margin-bottom:20px;">Click below to be taken to our secure site to pay your Property Tax Department, LLC invoice:</h2>
 
-    <p>Look up your invoice below using the PIN or invoice number from your appeal packet.</p>
+      <p style="color:var(--ink-soft); margin-bottom:32px;">
+        Thank you for your trust in The Property Tax Department, LLC — we're so happy to have saved
+        you real money on your property tax bill. We look forward to working together in the future
+        to keep home ownership affordable in Illinois!
+      </p>
 
-    <form class="simple-form" onsubmit="return false;">
-      <label for="invoice-lookup">Property PIN or Invoice Number</label>
-      <input id="invoice-lookup" type="text" placeholder="e.g. 08-13-314-026-0000">
-      <button type="submit" class="btn btn-primary -full-width" style="width:100%; justify-content:center;">
-        Find My Invoice
-      </button>
-    </form>
-
-    <div class="notice-box" style="margin-top:32px;">
-      <strong>Note for implementation</strong>
-      This lookup form is a placeholder shell — wire the submit handler to whatever payment
-      processor you're using (Stripe, LawPay, etc.) so it looks up the invoice and hands off to
-      checkout. I deliberately didn't carry over the old site's "technical difficulties" banner
-      here, since that was a point-in-time outage notice, not evergreen content.
+      <a href="https://propertytax123.com/rackforms/output/forms/payments/index.php" class="btn btn-primary">
+        Click Here To Pay
+      </a>
     </div>
 
-    <p style="margin-top:32px;">
+    <p style="text-align:center; color:var(--ink-soft); margin-top:32px;">
       Have a question about your invoice instead? <a href="index.html#contact">Contact us</a> and
       we'll help directly.
     </p>
-
   </div>
 </section>
 
@@ -87,7 +77,7 @@
         <h4>Company</h4>
         <ul>
           <li><a href="index.html#about">About Us</a></li>
-          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="faq.html">FAQ</a></li>
           <li><a href="pay.html">Pay My Invoice</a></li>
           <li><a href="privacy-policy.html">Privacy Policy</a></li>
           <li><a href="legal-disclosures.html">Legal Disclosures</a></li>
