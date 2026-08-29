@@ -34,6 +34,8 @@
   --graph-red: #A6402F; /* site's stamp red */
   --graph-green: #3D6B57; /* site's savings green */
   --graph-black: #1C2B45; /* site's ink navy */
+
+  --page-background: #E9EAE1; /* matches site's --paper */
 }
 
 
@@ -46,6 +48,7 @@
 
 html, body {
   font-size: 16px;
+  background: var(--page-background);
 }
 
 /**
