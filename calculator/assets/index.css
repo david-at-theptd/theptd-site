@@ -40,7 +40,7 @@
 /**
 * Style the autocomplete plugin dropdown
 */
-.ui-autocomplete.ui-menu { box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+.ui-autocomplete.ui-menu { box-shadow: 2px 2px 5px rgba(28,43,69,0.15); }
 
 .ui-autocomplete.ui-menu .ui-menu-item-wrapper {
   padding: 10px;
@@ -77,7 +77,7 @@ hr { margin: 30px 0; }
   background-color: var(--white);
   margin: 40px auto 70px auto;
   padding: 50px 100px 100px;
-  box-shadow: rgba(0,0,0,0.2) 0px 2px 50px;
+  box-shadow: rgba(28,43,69,0.10) 0px 12px 32px;
   width: 700px;
   max-width: 100%;
 }
