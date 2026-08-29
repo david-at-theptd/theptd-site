@@ -1,7 +1,6 @@
 /**
-* Minimal site chrome for the calculator funnel pages - ties them visually
-* back to the main site's redesign without competing with the Poppins-based
-* calculator styling inside .ptd-main
+* Site chrome for the calculator funnel pages - now sharing the same
+* Fraunces/IBM Plex typography and color palette as the rest of the site
 */
 
 .ptd-site-header {
@@ -10,7 +9,7 @@
 }
 
 .ptd-site-logo {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Fraunces', serif;
   font-weight: 700;
   color: #ffffff;
   text-decoration: none;
@@ -22,7 +21,7 @@
 }
 
 .ptd-site-logo span {
-  font-family: monospace;
+  font-family: 'IBM Plex Mono', monospace;
   font-weight: 500;
   font-size: .62rem;
   background: rgba(255,255,255,0.15);
@@ -37,7 +36,7 @@
   text-align: center;
   padding: 24px;
   font-size: .8rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .ptd-site-footer a {
