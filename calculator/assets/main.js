@@ -55,7 +55,14 @@ const SessionStorageKeys = {
   * The stringified signup response, which contains links to the final merged
   * PDF documents
   */
-  SignupResponse: 'signup-response'
+  SignupResponse: 'signup-response',
+
+  /**
+  * Object with keys email (lowercased) and token: proof, signed by the API,
+  * that the customer confirmed this email address with an emailed code.
+  * Sent along with the final signup submit.
+  */
+  EmailConfirmation: 'email-confirmation'
 }
 
 /**

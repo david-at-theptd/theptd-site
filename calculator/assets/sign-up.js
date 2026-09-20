@@ -212,6 +212,14 @@ function continueSignup(submitEvent) {
     return inputValid;
   }).every(isValid => isValid === true);
 
+  if (isFormValid && !isEmailConfirmed(formValues.email)) {
+    // Everything else is fine, but the emailed code hasn't been entered yet
+    $(FieldsMissingErrSel).addClass(HiddenClass);
+    $('#email-confirm-required-err').removeClass(InlineHiddenClass);
+    $('#email-confirm')[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
   if (isFormValid) {
     sessionStorage.setItem(
       SessionStorageKeys.SignupData,

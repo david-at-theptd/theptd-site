@@ -85,6 +85,34 @@
           </div>
         </div>
 
+        <div class="email-confirm" id="email-confirm">
+          <div id="email-confirm-start">
+            <button type="button" id="email-send-btn" class="btn -mini -outline">Email me a confirmation code</button>
+            <p class="email-confirm-note">
+              We'll email a 6-digit code to confirm this address is really yours. This is separate from
+              the copy of your agreement we email you after you sign up.
+            </p>
+          </div>
+
+          <div id="email-confirm-entry" class="hidden">
+            <label for="email-code-input">Enter the 6-digit code we emailed to <strong id="email-confirm-target"></strong></label>
+            <div class="email-code-row">
+              <input id="email-code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
+              <button type="button" id="email-verify-btn" class="btn -mini -blue">Confirm</button>
+            </div>
+            <p id="email-code-err" class="inline-error -hidden" role="alert"></p>
+            <p class="email-confirm-note">
+              Didn't get it? Check your spam folder, or
+              <button type="button" id="email-resend-btn" class="link-btn">Send a new code</button>
+              &middot;
+              <button type="button" id="email-change-btn" class="link-btn">Use a different email</button>
+            </p>
+          </div>
+
+          <p id="email-confirmed" class="email-confirmed hidden">&#10003; Email confirmed: <span id="email-confirmed-address"></span></p>
+          <p id="email-confirm-required-err" class="inline-error -hidden" role="alert">Please confirm your email address before continuing.</p>
+        </div>
+
         <button type="submit" class="btn -orange">
           Next
           <span class="arrow" aria-hidden="true">→</span>
@@ -101,5 +129,6 @@
 
 <script src="assets/main.js"></script>
 <script src="assets/sign-up.js"></script>
+<script src="assets/email-confirm.js"></script>
 </body>
 </html>
