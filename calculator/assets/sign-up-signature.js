@@ -530,23 +530,24 @@ function handleSignupResponse(response) {
     parsedResponse = jQuery.parseJSON(response);
   }
   catch (error) {
-    // Parse errors are swallowed - the original always forces success below
+    console.error('Signup response was not valid JSON', response);
   }
 
-  // The signup only worked if we get a success back
-  if (parsedResponse && parsedResponse[0][0] === 'success') {
+  const result = parsedResponse && parsedResponse[0];
+
+  // Only a genuine 'success' from the server counts. Anything else (a database
+  // error, an unexpected reply) must not show the confirmation page, or the
+  // customer would believe they signed up when nothing was saved.
+  if (result && (result[0] === 'success' || result.status === 'success')) {
     sessionStorage.setItem(
       SessionStorageKeys.SignupResponse,
-      JSON.stringify(parsedResponse[0]));
+      JSON.stringify(result));
 
     showSignupSuccess();
   }
   else {
-    // Forcing success message due to some change preventing a valid JSON to come back
-    sessionStorage.setItem(
-      SessionStorageKeys.SignupResponse,
-      'success');
-    showSignupSuccess();
+    console.error('Signup was not confirmed by the server', response);
+    showSignupError();
   }
 }
 
