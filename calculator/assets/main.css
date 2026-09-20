@@ -462,3 +462,47 @@ a .new-tab, .link .new-tab {
 
   .ptd-main .inline-error.-hidden { display: none; }
 }
+
+/**
+* Busy overlay: dims a card (or the whole window with -page) and shows a
+* spinner plus a message while a request is in flight. Toggle with -active.
+*/
+.busy-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.busy-overlay.-page {
+  position: fixed;
+  z-index: 50;
+}
+
+.busy-overlay.-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.busy-overlay p {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.busy-spinner {
+  animation: spin 0.9s linear infinite;
+}
+
+.busy-spinner circle { stroke: var(--design-orange); }
