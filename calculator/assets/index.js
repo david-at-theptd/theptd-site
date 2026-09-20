@@ -19,22 +19,21 @@
 const NextUrl = PluginData.nextUrl || 'sign-up.html';
 
 /**
-* API Paths - UNCHANGED, same backend as the live site. GitHub Pages can't
-* run PHP, so this calls propertytax123.com directly again (relying on its
-* CORS settings for whatever domain this ends up deployed to) rather than
-* going through the /api/ proxy.
+* API Paths - the pt123 endpoints, now hosted on Azure App Service
+* (theptd-api). Which site origins may call them is controlled by that
+* app's ALLOWED_ORIGINS setting.
 */
 const AccessCodeUrl =
-  'https://propertytax123.com/rackforms/output/forms/pt123/execValidateCode.php';
+  'https://theptd-api.azurewebsites.net/execValidateCode.php';
 
 const SearchAddressUrl =
-  'https://propertytax123.com/rackforms/output/forms/pt123/searchAddress.php';
+  'https://theptd-api.azurewebsites.net/searchAddress.php';
 
 const SavingsUrl =
-  'https://propertytax123.com/rackforms/output/forms/pt123/execAutoComp.php';
+  'https://theptd-api.azurewebsites.net/execAutoComp.php';
 
 const PinFromAddressUrl =
-  'https://propertytax123.com/rackforms/output/forms/pt123/getPinFromAddress.php';
+  'https://theptd-api.azurewebsites.net/getPinFromAddress.php';
 
 /**
 * HTML Selectors

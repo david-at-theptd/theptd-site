@@ -7,10 +7,10 @@
 */
 
 /**
-* API Paths - UNCHANGED, same backend as the live site
+* API Paths - hosted on Azure App Service (theptd-api)
 */
 const PreFillUrl =
-  'https://propertytax123.com/rackforms/output/forms/pt123/execPreFill.php';
+  'https://theptd-api.azurewebsites.net/execPreFill.php';
 
 /**
 * PluginData is set inline (see sign-up.html) and should be an object
