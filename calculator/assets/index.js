@@ -396,11 +396,32 @@ function showSavingsError(error) {
 }
 
 /**
+* Fill the address (top) and PIN (bottom right) shown on both results
+* containers from what the user looked up.
+*/
+function fillResultMeta() {
+  const $ = jQuery;
+
+  let addrData = {};
+  try {
+    addrData = JSON.parse(sessionStorage.getItem(SessionStorageKeys.AddrData)) || {};
+  }
+  catch (error) {
+    console.error('Could not read address data', error);
+  }
+
+  $('.result-address-out').text((addrData.fullAddress || '').trim());
+  $('.result-pin-out').text(addrData.pin || '');
+}
+
+/**
 * Show the user their potential savings based on our estimates of their current
 * tax and predicted tax as well as the years till their next assessment.
 */
 function showSavings(currentTax, predictedTax, yearsTillReasses) {
   const $ = jQuery;
+
+  fillResultMeta();
 
   // Hide no savings message
   $(NoSavingsContSel).addClass(HiddenClass);
@@ -442,6 +463,8 @@ function showNoSavings(isClosed = false) {
   const $ = jQuery;
 
   vueApp.errors.isClosed = isClosed;
+
+  fillResultMeta();
 
   // Hide the whole lookup card (form + heading + hints), not just the form
   $(LookupCardSel).slideUp();
