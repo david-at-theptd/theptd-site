@@ -132,10 +132,21 @@
           <button type="submit" class="btn -orange" :disabled="submitting">
             Agree &amp; Sign Up
             <span class="arrow" aria-hidden="true">→</span>
+            <svg class="loading" :class="{ hidden: !submitting }" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="40 56"></circle>
+            </svg>
           </button>
         </div>
       </form>
 
+    </div>
+
+    <!-- Shown while the signup is being submitted -->
+    <div class="busy-overlay -page" :class="{ '-active': submitting }" role="status" aria-live="polite" v-cloak>
+      <svg class="busy-spinner" viewBox="0 0 50 50" width="48" height="48" aria-hidden="true">
+        <circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 60"></circle>
+      </svg>
+      <p>Submitting your sign-up&hellip;</p>
     </div>
 
     <!-- Overlays: document viewer, terms, disclosure, lawyer warning -->
