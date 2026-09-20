@@ -14,7 +14,7 @@ const LookupUrl = PluginData.lookupUrl || '/';
 * API Paths
 */
 const SignupUrl =
-  'https://propertytax123.com/rackforms/output/forms/pt123/insertClient.php';
+  'https://theptd-api.azurewebsites.net/insertClient.php';
 
 const ExpDateRegex = /^\d{2}\/\d{2}\/\d{4}$/; // Matches MM/DD/YYYY exactly
 const ShortDateRegex = /^\d{2}\/\d{2}\/\d{2}$/; // Matches MM/DD/YY exactly

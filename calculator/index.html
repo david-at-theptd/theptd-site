@@ -62,10 +62,10 @@
           We couldn't find that address &mdash; please select one from the dropdown list.
         </p>
 
-        <button type="submit" class="btn -full-width -orange">
+        <button type="submit" class="btn -full-width -orange" :disabled="isCalculating">
           Check
           <span class="arrow" aria-hidden="true">→</span>
-          <svg id="addr-loader" class="loading hidden" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <svg id="addr-loader" class="loading" :class="{ hidden: !isCalculating }" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
             <circle cx="12" cy="12" r="9" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="40 56"></circle>
           </svg>
         </button>
@@ -85,10 +85,19 @@
         <li>As soon as you see your address in the drop-down list, arrow down to highlight your address and press enter.</li>
         <li>To make it easier, please omit any and all punctuation. No need to add a period after an abbreviation.</li>
       </ul>
+
+      <div class="calc-overlay" :class="{ '-active': isCalculating }" role="status" aria-live="polite" v-cloak>
+        <svg class="calc-spinner" viewBox="0 0 50 50" width="48" height="48" aria-hidden="true">
+          <circle cx="25" cy="25" r="20" fill="none" stroke-width="5" stroke-linecap="round" stroke-dasharray="90 60"></circle>
+        </svg>
+        <p>Looking up your property&hellip;</p>
+      </div>
     </div>
 
     <!-- Shown when the property has appealable savings -->
     <div id="savings-cont" class="savings-cont hidden">
+      <p class="result-address"><span class="result-address-out"></span></p>
+
       <p class="savings-intro center">
         We think you can save $<span class="savings-out"></span> per year!
       </p>
@@ -121,10 +130,14 @@
 
       <hr>
       <button type="button" class="back-btn btn -outline">Back to Lookup</button>
+
+      <p class="result-pin">PIN <span class="result-pin-out"></span></p>
     </div>
 
     <!-- Shown when there's no clear savings yet -->
     <div id="no-savings-cont" class="no-savings-cont hidden">
+      <p class="result-address"><span class="result-address-out"></span></p>
+
       <p class="savings-intro center">Hmmm, we need to dig a little deeper on your property.</p>
       <p>
         While at first glance, it appears you may be fairly assessed, our Analysts will personally review your
@@ -135,6 +148,8 @@
         Sign Up <span class="arrow" aria-hidden="true">→</span>
       </button>
       <button type="button" class="back-btn btn -outline">Back to Lookup</button>
+
+      <p class="result-pin">PIN <span class="result-pin-out"></span></p>
     </div>
   </div>
 
