@@ -119,6 +119,7 @@ function showEmailCodeEntry(email) {
   const $ = jQuery;
 
   $(EmailConfirmSel.target).text(email);
+  $(EmailConfirmSel.requiredError).addClass(InlineHiddenClass);
   $(EmailConfirmSel.startBox).addClass(HiddenClass);
   $(EmailConfirmSel.confirmedBox).addClass(HiddenClass);
   $(EmailConfirmSel.entryBox).removeClass(HiddenClass);
