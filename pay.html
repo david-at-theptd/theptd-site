@@ -215,21 +215,22 @@
 
   /**
   * ============================================================
-  * CONFIG - fill these in before this goes live
+  * CONFIG
   * ============================================================
-  * These match the exact field names and the exact lookup endpoint
-  * confirmed live on the real payment portal at propertytax123.com,
-  * so a compatible backend can reuse the same PHP with no changes.
+  * The invoice lookup and Stripe checkout endpoints, hosted on Azure App
+  * Service (theptd-api). Field names are unchanged from the original
+  * payment portal. Which site origins may call them is controlled by that
+  * app's ALLOWED_ORIGINS setting.
   */
 
-  // Confirmed live and working as-is (same backend, same field names)
+  // Invoice lookup
   const LookupInvoiceUrl =
-    'https://propertytax123.com/rackforms/output/forms/payments/execLookUpInvoice.php';
+    'https://theptd-api.azurewebsites.net/execLookUpInvoice.php';
 
-  // Confirmed live and working as-is (same backend, same field names as
-  // the original site's payNow() function)
+  // Creates the Stripe Checkout session (same request shape as the original
+  // site's payNow() function)
   const GetStripeIdUrl =
-    'https://propertytax123.com/rackforms/output/forms/payments/getStripeId.php';
+    'https://theptd-api.azurewebsites.net/getStripeId.php';
 
   // TODO: Your Stripe PUBLISHABLE key (safe to expose client-side - this
   // is NOT your secret key). Found in your Stripe Dashboard under

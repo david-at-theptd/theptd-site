@@ -128,10 +128,9 @@
   const mainNav = document.getElementById('mainNav');
   menuBtn.addEventListener('click', () => mainNav.classList.toggle('open'));
 
-  // Confirmed live and working as-is (same backend as the original
-  // theptd.com/payment/success.html page)
+  // Looks up the Stripe checkout result (hosted on Azure App Service, theptd-api)
   const SuccessInfoUrl =
-    'https://propertytax123.com/rackforms/output/forms/payments/getStripeSuccessPaymentInfo.php';
+    'https://theptd-api.azurewebsites.net/getStripeSuccessPaymentInfo.php';
 
   function getQueryParam(name) {
     return new URLSearchParams(window.location.search).get(name);
