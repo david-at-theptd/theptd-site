@@ -68,6 +68,7 @@ var vueApp = new Vue({
     formErrors: {
       signature: false,
       signup: false,
+      emailUnconfirmed: false,
       prevSteps: false
     },
 
@@ -516,10 +517,45 @@ function submitSignup() {
 
   const wrappedData = { jsonData: JSON.stringify(dataToSubmit) };
 
+  // Proof (signed by the API) that this email address was confirmed with a code
+  const emailToken = getEmailToken(dataToSubmit.email);
+  if (emailToken) {
+    wrappedData.emailToken = emailToken;
+  }
+
+  // Clients who came through a texted link send that proof instead
+  const linkToken = getLinkToken(dataToSubmit.cmd_client_pin_id);
+  if (linkToken) {
+    wrappedData.linkToken = linkToken;
+  }
+
   // Wrap in a jsonData key
   jQuery.post(SignupUrl, wrappedData)
     .done(handleSignupResponse)
     .fail(showSignupError);
+}
+
+/** The saved email-confirmation token, if it was issued for this exact email */
+function getEmailToken(email) {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(SessionStorageKeys.EmailConfirmation));
+    const sameEmail = saved && saved.email === String(email || '').trim().toLowerCase();
+    return sameEmail ? saved.token : null;
+  }
+  catch (error) {
+    return null;
+  }
+}
+
+/** The texted-link proof, if it was issued for this exact client record */
+function getLinkToken(clientId) {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(SessionStorageKeys.LinkToken));
+    return saved && saved.clientId === String(clientId) ? saved.token : null;
+  }
+  catch (error) {
+    return null;
+  }
 }
 
 /** Parse the BE signup response and check if the request succeeded */
@@ -544,6 +580,12 @@ function handleSignupResponse(response) {
       JSON.stringify(result));
 
     showSignupSuccess();
+  }
+  else if (result && result.error === 'email_not_verified') {
+    // The email confirmation is missing or has expired
+    vueApp.submitting = false;
+    vueApp.formErrors.signup = false;
+    vueApp.formErrors.emailUnconfirmed = true;
   }
   else {
     console.error('Signup was not confirmed by the server', response);

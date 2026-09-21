@@ -124,6 +124,10 @@
         <p class="error-msg -block" :class="{ hidden: !formErrors.accept }" v-cloak>
           Please check both boxes above (the fee agreement and the terms and conditions) before continuing.
         </p>
+        <p class="error-msg -block" :class="{ hidden: !formErrors.emailUnconfirmed }" v-cloak>
+          We need you to confirm your email address again before we can finish.
+          <a href="sign-up.html">Go back to confirm it</a>.
+        </p>
         <p class="error-msg -block" :class="{ hidden: !formErrors.signup }" v-cloak>
           We couldn't confirm that your sign-up was received. Please try again in a moment, or call us at <a href="tel:3124889050">(312) 488-9050</a> and we'll take care of it.
         </p>

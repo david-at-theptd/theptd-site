@@ -154,6 +154,15 @@ function parsePrefillResponse(response) {
     }
 
     sessionStorage.setItem(SessionStorageKeys.ClientPin, clientData.id);
+
+    // The API signs a proof that this texted link is real; with it, the email
+    // confirmation step isn't needed
+    if (clientData.linkToken) {
+      sessionStorage.setItem(
+        SessionStorageKeys.LinkToken,
+        JSON.stringify({ clientId: String(clientData.id), token: clientData.linkToken }));
+      applyEmailConfirmExemption();
+    }
   }
   catch (error) {
     console.error('JSON parse error', error);
@@ -211,6 +220,14 @@ function continueSignup(submitEvent) {
 
     return inputValid;
   }).every(isValid => isValid === true);
+
+  if (isFormValid && !isEmailConfirmed(formValues.email) && !isEmailConfirmationExempt()) {
+    // Everything else is fine, but the emailed code hasn't been entered yet
+    $(FieldsMissingErrSel).addClass(HiddenClass);
+    $('#email-confirm-required-err').removeClass(InlineHiddenClass);
+    $('#email-confirm')[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
 
   if (isFormValid) {
     sessionStorage.setItem(

@@ -202,3 +202,105 @@
 
   .ptd-main #pay-btn { padding-right: 63px; }
 }
+
+/**
+* Email confirmation block (sign up page 1)
+*/
+.email-confirm { margin: 6px 0 22px; }
+
+.email-confirm-note {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: var(--text-color-light);
+}
+
+.email-code-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  max-width: 340px;
+  margin-top: 6px;
+}
+
+.email-code-row input {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  letter-spacing: 0.35em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 1.25rem;
+}
+
+.email-confirmed {
+  margin: 0;
+  font-weight: 600;
+  color: var(--graph-green);
+}
+
+.ptd-main .link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--design-blue);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ptd-main .link-btn:disabled {
+  color: var(--text-color-light);
+  text-decoration: none;
+  cursor: default;
+}
+
+/* The email field once it has been confirmed */
+.ptd-main input.-locked {
+  background-color: #ebe9e0;
+  color: var(--text-color-light);
+  cursor: not-allowed;
+}
+
+/**
+* "Email confirmed" pop-up
+*/
+.confirm-modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(28,43,69,0.55);
+}
+
+.confirm-modal-box {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px 28px;
+  text-align: center;
+  background: var(--white);
+  box-shadow: rgba(28,43,69,0.35) 0px 20px 48px;
+}
+
+.confirm-modal-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 12px;
+  border-radius: 100%;
+  background: var(--graph-green);
+  color: var(--white);
+  font-size: 1.8rem;
+}
+
+.confirm-modal-box h3 { margin: 0 0 10px; }
+
+.confirm-modal-box p { margin: 0 0 22px; word-break: break-word; }
+
+.confirm-modal-box .btn { width: 100%; }
