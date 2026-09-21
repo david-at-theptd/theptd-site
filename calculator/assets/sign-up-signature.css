@@ -82,3 +82,10 @@
   .ptd-main .docs-list button.link { display: none; }
   .ptd-main .docs-list a { display: block; }
 }
+
+/* Lighter hint text next to a field label */
+.label .label-hint {
+  font-weight: 400;
+  color: var(--text-color-light);
+  opacity: 0.85;
+}

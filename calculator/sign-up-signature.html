@@ -59,7 +59,7 @@
 
       <form @submit="validateAndSubmitForm">
 
-        <label class="label">Draw Your Signature</label>
+        <label class="label">Draw Your Signature <span class="label-hint">(If you have a very simple autograph and it rejects, draw a line under your signature)</span></label>
         <canvas id="signature-canvas" class="signature-box"></canvas>
         <div class="signature-btns">
           <button type="button" class="btn -mini -outline" @click="undoSignatureStroke">Undo</button>
