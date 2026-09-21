@@ -25,11 +25,15 @@ const DocsToSign = [{
   filename: 'Cook County Board of Review Form.pdf',
   onlyCounty: 'COOK'
 }, {
+  name: 'Cook County Assessor Attorney Authorization',
+  filename: 'Cook_County_Assessor_Attorney_Authorization.pdf',
+  onlyCounty: 'COOK'
+}, {
   name: 'Standard Attorney Authorization Form',
   filename: 'Standard Attorney Authorization Form.pdf',
   excludeCounty: 'COOK'
 }, {
-  name: 'Our Agreement',
+  name: 'PTAS Agreement',
   filename: 'ThePTD_Residential_Agreement.pdf'
 }]
 
