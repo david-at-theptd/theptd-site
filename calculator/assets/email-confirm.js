@@ -55,6 +55,32 @@ function readEmailConfirmation() {
   }
 }
 
+/** Reads the saved texted-link proof ({ clientId, token }) if it hasn't expired */
+function readLinkToken() {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(SessionStorageKeys.LinkToken));
+    if (!saved || !saved.token || !saved.clientId) { return null; }
+
+    const payload = saved.token.split('.')[0].replace(/-/g, '+').replace(/_/g, '/');
+    const expires = JSON.parse(atob(payload)).x;
+    return expires * 1000 > Date.now() ? saved : null;
+  }
+  catch (error) {
+    return null;
+  }
+}
+
+/** Clients who arrived through a texted link don't need to confirm their email */
+function isEmailConfirmationExempt() {
+  return Boolean(readLinkToken());
+}
+
+function applyEmailConfirmExemption() {
+  if (isEmailConfirmationExempt()) {
+    jQuery('#email-confirm').addClass(HiddenClass);
+  }
+}
+
 /** True if this exact email address has been confirmed in this session */
 function isEmailConfirmed(email) {
   const saved = readEmailConfirmation();
@@ -70,6 +96,15 @@ jQuery(document).ready(function($) {
     $(EmailConfirmSel.emailInput).focus();
   });
 
+  // The pop-up after a correct code: Continue moves on exactly like the Next button
+  $('#email-confirmed-continue').click(function() {
+    closeEmailConfirmedModal();
+    $('#form-pt-1').trigger('submit');
+  });
+  $(document).on('keydown', function(event) {
+    if (event.key === 'Escape') { closeEmailConfirmedModal(); }
+  });
+
   // Enter in the code box confirms the code rather than submitting the form
   $(EmailConfirmSel.codeInput).on('keydown', function(event) {
     if (event.key === 'Enter') {
@@ -81,6 +116,7 @@ jQuery(document).ready(function($) {
   // Changing the address invalidates anything sent to or confirmed for another one
   $(EmailConfirmSel.emailInput).on('input change', onEmailEdited);
   onEmailEdited();
+  applyEmailConfirmExemption();
 });
 
 function onEmailEdited() {
@@ -134,6 +170,22 @@ function showEmailConfirmed(email) {
   $(EmailConfirmSel.entryBox).addClass(HiddenClass);
   $(EmailConfirmSel.confirmedBox).removeClass(HiddenClass);
   $(EmailConfirmSel.requiredError).addClass(InlineHiddenClass);
+}
+
+/** Once confirmed, the address can't be edited on this page */
+function lockEmailField() {
+  jQuery(EmailConfirmSel.emailInput).prop('readonly', true).addClass('-locked');
+}
+
+function openEmailConfirmedModal(email) {
+  const $ = jQuery;
+  $('#email-confirmed-modal-address').text(email);
+  $('#email-confirmed-modal').removeClass(HiddenClass);
+  $('#email-confirmed-continue').focus();
+}
+
+function closeEmailConfirmedModal() {
+  jQuery('#email-confirmed-modal').addClass(HiddenClass);
 }
 
 function setSendButtonsBusy(isBusy) {
@@ -234,6 +286,8 @@ function verifyEmailCode() {
       emailChallengeFor = null;
       clearInterval(resendTimer);
       showEmailConfirmed(email);
+      lockEmailField();
+      openEmailConfirmedModal(email);
     })
     .fail(function(xhr) {
       const error = xhr.responseJSON && xhr.responseJSON.error;

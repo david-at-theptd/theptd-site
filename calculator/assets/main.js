@@ -62,7 +62,14 @@ const SessionStorageKeys = {
   * that the customer confirmed this email address with an emailed code.
   * Sent along with the final signup submit.
   */
-  EmailConfirmation: 'email-confirmation'
+  EmailConfirmation: 'email-confirmation',
+
+  /**
+  * Object with keys clientId and token: proof, signed by the API, that this
+  * visitor arrived through a valid texted link for that client. Clients with
+  * this skip the email confirmation.
+  */
+  LinkToken: 'link-token'
 }
 
 /**

@@ -523,6 +523,12 @@ function submitSignup() {
     wrappedData.emailToken = emailToken;
   }
 
+  // Clients who came through a texted link send that proof instead
+  const linkToken = getLinkToken(dataToSubmit.cmd_client_pin_id);
+  if (linkToken) {
+    wrappedData.linkToken = linkToken;
+  }
+
   // Wrap in a jsonData key
   jQuery.post(SignupUrl, wrappedData)
     .done(handleSignupResponse)
@@ -535,6 +541,17 @@ function getEmailToken(email) {
     const saved = JSON.parse(sessionStorage.getItem(SessionStorageKeys.EmailConfirmation));
     const sameEmail = saved && saved.email === String(email || '').trim().toLowerCase();
     return sameEmail ? saved.token : null;
+  }
+  catch (error) {
+    return null;
+  }
+}
+
+/** The texted-link proof, if it was issued for this exact client record */
+function getLinkToken(clientId) {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(SessionStorageKeys.LinkToken));
+    return saved && saved.clientId === String(clientId) ? saved.token : null;
   }
   catch (error) {
     return null;
