@@ -151,6 +151,25 @@
 
       <p class="result-pin">PIN <span class="result-pin-out"></span></p>
     </div>
+
+    <!-- Shown when the address is an individual Cook County condo unit (PIN
+         doesn't end in -0000) - condo appeals must be filed by the whole
+         association, not unit by unit, so sign-up is blocked here -->
+    <div id="condo-cont" class="no-savings-cont hidden">
+      <p class="result-address"><span class="result-address-out"></span></p>
+
+      <p class="savings-intro center">We can't register this property online.</p>
+      <p>
+        This PIN belongs to an individual condominium unit in Cook County. Cook County
+        requires condo appeals to be filed by the entire association rather than by
+        individual unit owners, so we're unable to accept a registration for this
+        property through this form. If you represent the condo association, or believe
+        this PIN is incorrect, please contact us directly.
+      </p>
+      <button type="button" class="back-btn btn -outline">Back to Lookup</button>
+
+      <p class="result-pin">PIN <span class="result-pin-out"></span></p>
+    </div>
   </div>
 
 </div>

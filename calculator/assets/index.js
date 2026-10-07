@@ -60,6 +60,7 @@ const BackBtnSel = '.back-btn';
 const OverlaySel = '#overlay';
 const SavingsContSel = '#savings-cont';
 const NoSavingsContSel = '#no-savings-cont';
+const CondoContSel = '#condo-cont';
 
 // Outputs - filled by BE data
 const CurrentTaxOutSel = '.current-tax-out';
@@ -81,6 +82,25 @@ const LoadingSel = '.loading';
 * errors in unique ways
 */
 const ClosedDeadlineMatchStr = 'is closed';
+
+/**
+* Cook County PINs ending in anything other than -0000 belong to an
+* individual condo unit rather than the parcel as a whole. Condo appeals
+* must be filed by the entire association, not unit by unit, so we block
+* sign-up for these instead of continuing to the savings lookup.
+*/
+const CondoBlockedCounty = 'COOK';
+
+/**
+* True if `pin` is a Cook County condo-unit PIN, i.e. its last four digits
+* (ignoring dashes/formatting) aren't 0000.
+*/
+function isCondoPin(pin) {
+  const digitsOnly = (pin || '').replace(/\D/g, '');
+  const last4 = digitsOnly.slice(-4);
+
+  return last4 !== '' && last4 !== '0000';
+}
 
 /**
 * Global State
@@ -234,6 +254,7 @@ function backToLookup() {
 
   $(SavingsContSel).slideUp();
   $(NoSavingsContSel).slideUp();
+  $(CondoContSel).slideUp();
   $(LookupCardSel).slideDown();
 }
 
@@ -299,6 +320,12 @@ function processPropertyPin(propertyPinData) {
 
   // Store address pin for signup steps
   sessionStorage.setItem(SessionStorageKeys.AddrData, JSON.stringify(AddrData));
+
+  if ((addrCounty || '').toUpperCase() === CondoBlockedCounty && isCondoPin(addrPin)) {
+    vueApp.isCalculating = false;
+    showCondoBlocked();
+    return;
+  }
 
   fetchSavings(addrPin, addrCounty);
 }
@@ -472,6 +499,24 @@ function showNoSavings(isClosed = false) {
   $(NoSavingsContSel).removeClass(HiddenClass);
   $(NoSavingsContSel).slideDown();
   $(SavingsContSel).addClass(HiddenClass);
+}
+
+/**
+* Show the condo-blocked message in place of savings/no-savings results, for
+* Cook County PINs that belong to an individual condo unit.
+*/
+function showCondoBlocked() {
+  const $ = jQuery;
+
+  fillResultMeta();
+
+  // Hide the whole lookup card (form + heading + hints), not just the form
+  $(LookupCardSel).slideUp();
+
+  $(SavingsContSel).addClass(HiddenClass);
+  $(NoSavingsContSel).addClass(HiddenClass);
+  $(CondoContSel).removeClass(HiddenClass);
+  $(CondoContSel).slideDown();
 }
 
 /**
