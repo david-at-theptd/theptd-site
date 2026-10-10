@@ -378,6 +378,24 @@
     }
   });
 
+  /**
+  * ============================================================
+  * Prefill from the address (?inv=...&pin=...)
+  * ============================================================
+  * Most links won't have these. When both are present, look the invoice up
+  * right away; when only one is, just fill that field in.
+  */
+  (function prefillFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const inv = (params.get('inv') || '').trim();
+    const pin = (params.get('pin') || '').trim();
+
+    if (inv) { document.getElementById('invoiceNumber').value = inv; }
+    if (pin) { document.getElementById('propertyPIN').value = pin; }
+
+    if (inv && pin) { document.getElementById('lookUpInvoice').click(); }
+  })();
+
   </script>
 
 </body>
