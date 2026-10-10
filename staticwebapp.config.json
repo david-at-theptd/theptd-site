@@ -1,26 +1,6 @@
 {
   "routes": [
     {
-      "route": "/payment/success.html",
-      "redirect": "/payment-success.html",
-      "statusCode": 302
-    },
-    {
-      "route": "/payment/success",
-      "redirect": "/payment-success.html",
-      "statusCode": 302
-    },
-    {
-      "route": "/payment/index.html",
-      "redirect": "/pay.html",
-      "statusCode": 302
-    },
-    {
-      "route": "/payment",
-      "redirect": "/pay.html",
-      "statusCode": 302
-    },
-    {
       "route": "/pay",
       "redirect": "/pay.html",
       "statusCode": 302
@@ -28,11 +8,6 @@
     {
       "route": "/free-property-tax-evaluation",
       "redirect": "/calculator/index.html",
-      "statusCode": 301
-    },
-    {
-      "route": "/sign-up-1",
-      "redirect": "/calculator/sign-up.html",
       "statusCode": 301
     },
     {
