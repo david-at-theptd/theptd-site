@@ -1,44 +1,99 @@
 {
   "routes": [
-    { "route": "/payment/success.html", "redirect": "/payment-success.html", "statusCode": 302 },
-    { "route": "/payment/success", "redirect": "/payment-success.html", "statusCode": 302 },
-    { "route": "/payment/success/", "redirect": "/payment-success.html", "statusCode": 302 },
-
-    { "route": "/payment/index.html", "redirect": "/pay.html", "statusCode": 302 },
-    { "route": "/payment/", "redirect": "/pay.html", "statusCode": 302 },
-    { "route": "/payment", "redirect": "/pay.html", "statusCode": 302 },
-    { "route": "/pay/", "redirect": "/pay.html", "statusCode": 302 },
-    { "route": "/pay", "redirect": "/pay.html", "statusCode": 302 },
-
-    { "route": "/free-property-tax-evaluation/", "redirect": "/calculator/index.html", "statusCode": 301 },
-    { "route": "/free-property-tax-evaluation", "redirect": "/calculator/index.html", "statusCode": 301 },
-    { "route": "/sign-up-1/", "redirect": "/calculator/sign-up.html", "statusCode": 301 },
-    { "route": "/sign-up-1", "redirect": "/calculator/sign-up.html", "statusCode": 301 },
-    { "route": "/sign-up-2/", "redirect": "/calculator/index.html", "statusCode": 301 },
-    { "route": "/sign-up-2", "redirect": "/calculator/index.html", "statusCode": 301 },
-    { "route": "/sign-up-3/", "redirect": "/calculator/index.html", "statusCode": 301 },
-    { "route": "/sign-up-3", "redirect": "/calculator/index.html", "statusCode": 301 },
-    { "route": "/sign-up-confirmation/", "redirect": "/calculator/index.html", "statusCode": 301 },
-    { "route": "/sign-up-confirmation", "redirect": "/calculator/index.html", "statusCode": 301 },
-
-    { "route": "/faq/", "redirect": "/faq.html", "statusCode": 301 },
-    { "route": "/faq", "redirect": "/faq.html", "statusCode": 301 },
-    { "route": "/privacy-policy/", "redirect": "/privacy-policy.html", "statusCode": 301 },
-    { "route": "/privacy-policy", "redirect": "/privacy-policy.html", "statusCode": 301 },
-    { "route": "/legal-disclosures/", "redirect": "/legal-disclosures.html", "statusCode": 301 },
-    { "route": "/legal-disclosures", "redirect": "/legal-disclosures.html", "statusCode": 301 },
-
-    { "route": "/home/", "redirect": "/", "statusCode": 301 },
-    { "route": "/home", "redirect": "/", "statusCode": 301 },
-    { "route": "/our-guarantee/", "redirect": "/", "statusCode": 301 },
-    { "route": "/our-guarantee", "redirect": "/", "statusCode": 301 },
-    { "route": "/about/", "redirect": "/#about", "statusCode": 301 },
-    { "route": "/about", "redirect": "/#about", "statusCode": 301 },
-    { "route": "/testimonials/", "redirect": "/#testimonials", "statusCode": 301 },
-    { "route": "/testimonials", "redirect": "/#testimonials", "statusCode": 301 },
-    { "route": "/deadlines/", "redirect": "/#deadlines", "statusCode": 301 },
-    { "route": "/deadlines", "redirect": "/#deadlines", "statusCode": 301 },
-    { "route": "/contact/", "redirect": "/#contact", "statusCode": 301 },
-    { "route": "/contact", "redirect": "/#contact", "statusCode": 301 }
+    {
+      "route": "/payment/success.html",
+      "redirect": "/payment-success.html",
+      "statusCode": 302
+    },
+    {
+      "route": "/payment/success",
+      "redirect": "/payment-success.html",
+      "statusCode": 302
+    },
+    {
+      "route": "/payment/index.html",
+      "redirect": "/pay.html",
+      "statusCode": 302
+    },
+    {
+      "route": "/payment",
+      "redirect": "/pay.html",
+      "statusCode": 302
+    },
+    {
+      "route": "/pay",
+      "redirect": "/pay.html",
+      "statusCode": 302
+    },
+    {
+      "route": "/free-property-tax-evaluation",
+      "redirect": "/calculator/index.html",
+      "statusCode": 301
+    },
+    {
+      "route": "/sign-up-1",
+      "redirect": "/calculator/sign-up.html",
+      "statusCode": 301
+    },
+    {
+      "route": "/sign-up-2",
+      "redirect": "/calculator/index.html",
+      "statusCode": 301
+    },
+    {
+      "route": "/sign-up-3",
+      "redirect": "/calculator/index.html",
+      "statusCode": 301
+    },
+    {
+      "route": "/sign-up-confirmation",
+      "redirect": "/calculator/index.html",
+      "statusCode": 301
+    },
+    {
+      "route": "/faq",
+      "redirect": "/faq.html",
+      "statusCode": 301
+    },
+    {
+      "route": "/privacy-policy",
+      "redirect": "/privacy-policy.html",
+      "statusCode": 301
+    },
+    {
+      "route": "/legal-disclosures",
+      "redirect": "/legal-disclosures.html",
+      "statusCode": 301
+    },
+    {
+      "route": "/home",
+      "redirect": "/",
+      "statusCode": 301
+    },
+    {
+      "route": "/our-guarantee",
+      "redirect": "/",
+      "statusCode": 301
+    },
+    {
+      "route": "/about",
+      "redirect": "/#about",
+      "statusCode": 301
+    },
+    {
+      "route": "/testimonials",
+      "redirect": "/#testimonials",
+      "statusCode": 301
+    },
+    {
+      "route": "/deadlines",
+      "redirect": "/#deadlines",
+      "statusCode": 301
+    },
+    {
+      "route": "/contact",
+      "redirect": "/#contact",
+      "statusCode": 301
+    }
   ]
 }
