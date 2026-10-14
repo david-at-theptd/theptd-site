@@ -376,9 +376,16 @@ function processSavings(savingsData) {
     return;
   }
 
-  // Store the client PIN for later
-  sessionStorage.setItem(SessionStorageKeys.ClientPin,
-    response.cmd_client_pin_id);
+  // Store the client PIN for later. sessionStorage turns a null/undefined value
+  // into the text "null"/"undefined", so only save a real ID, and clear any ID
+  // left over from an earlier lookup so it can't be sent for this property.
+  if (response.cmd_client_pin_id) {
+    sessionStorage.setItem(SessionStorageKeys.ClientPin,
+      response.cmd_client_pin_id);
+  }
+  else {
+    sessionStorage.removeItem(SessionStorageKeys.ClientPin);
+  }
 
   // Convert string with commas to integer (e.g. '6,093' -> 6093)
   const parsedCurrTax = parseInt(response.EstCurTax.replace(/,/g, ''))

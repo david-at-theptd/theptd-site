@@ -483,9 +483,14 @@ function submitSignup() {
 
   dataToSubmit.signature = signaturePad.toDataURL();
 
-  // Send over the client PIN ID from pulling savings on step 1
+  // Send over the client PIN ID from pulling savings on step 1. When there isn't
+  // one, send a real null: a stored "null"/"undefined" is text, not an ID, and
+  // the database errors when it tries to convert it to a number.
+  const storedClientPin = sessionStorage.getItem(SessionStorageKeys.ClientPin);
   dataToSubmit.cmd_client_pin_id =
-    sessionStorage.getItem(SessionStorageKeys.ClientPin);
+    (storedClientPin && storedClientPin !== 'null' && storedClientPin !== 'undefined')
+      ? storedClientPin
+      : null;
 
   // Also send the access code they used to unlock the site
   dataToSubmit.accessCode =
