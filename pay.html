@@ -46,6 +46,16 @@
     border-radius:2px; display:none;
   }
   .pay-success.show{ display:block; }
+  /* 50% split option (shown only when the lookup says it is available) */
+  .pay-options{
+    display:none; margin:0 0 18px; padding:16px 18px; border:1px solid var(--line);
+    background:var(--paper-light); border-radius:2px; font-size:.92rem;
+  }
+  .pay-options.show{ display:block; }
+  .pay-options h3{ margin:0 0 10px; font-size:1rem; }
+  .pay-options p{ margin:0; }
+  .pay-option{ display:flex; gap:10px; align-items:flex-start; margin:10px 0 0; cursor:pointer; }
+  .pay-option input{ margin-top:4px; flex-shrink:0; }
 </style>
 </head>
 <body>
@@ -146,11 +156,12 @@
         </div>
         <p class="pay-step-desc">We use Stripe for payment processing and never store your card information.</p>
 
-        <div class="pay-field">
-          <label for="invoiceAmount">Invoice Amount</label>
-          <input id="invoiceAmount" name="invoiceAmount" type="text" placeholder="$0.00">
-        </div>
+        <div class="pay-options" id="payOptions"></div>
 
+        <div class="pay-field">
+          <label for="invoiceAmount" id="invoiceAmountLabel">Invoice Amount</label>
+          <input id="invoiceAmount" name="invoiceAmount" type="text" placeholder="$0.00" readonly>
+        </div>
 
         <button type="button" id="Pay_Now" class="btn btn-primary" style="width:100%; justify-content:center;">
           Pay Now
@@ -248,6 +259,7 @@
     const errorEl = document.getElementById('step1Error');
 
     errorEl.classList.remove('show');
+    resetPaymentOptions();
 
     if (!invoiceNumber || !propertyPIN) {
       errorEl.textContent = 'Please enter both your invoice number and property PIN.';
@@ -294,11 +306,9 @@
       document.getElementById('email').value = data.email_address || '';
       document.getElementById('pin').value = data.pin || propertyPIN;
 
-      // The backend already knows the amount due - fill it in rather than
-      // asking the user to type it in themselves
-      if (data.payment_amount) {
-        document.getElementById('invoiceAmount').value = '$' + data.payment_amount;
-      }
+      // The backend already knows the amount due (the unpaid balance, and whether the
+      // 50% split is offered) - show it rather than asking the user to type it in
+      renderPaymentOptions(data);
 
       // Reveal steps 2 and 3
       document.getElementById('step2').classList.add('active');
@@ -309,6 +319,93 @@
       errorEl.classList.add('show');
     }
   });
+
+  /**
+  * ============================================================
+  * Payment amount / 50% split
+  * ============================================================
+  * The lookup returns payment_amount (the unpaid balance), amount_paid, and, when
+  * an invoice of $200 or more has no payments yet, split_available = 1 with
+  * split_amount (50% now) and split_remaining. The server decides what is allowed;
+  * this only shows the choice and sends it to the checkout call as paymentOption.
+  */
+  let paymentState = { splitAvailable: false, fullAmount: 0, splitAmount: 0, splitRemaining: 0, paid: 0 };
+
+  function money(value) {
+    return Number(value || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  }
+
+  function selectedPaymentOption() {
+    const chosen = document.querySelector('input[name="payOption"]:checked');
+    return (paymentState.splitAvailable && chosen && chosen.value === 'SPLIT') ? 'SPLIT' : 'FULL';
+  }
+
+  function updateAmountShown() {
+    const split = selectedPaymentOption() === 'SPLIT';
+    document.getElementById('invoiceAmount').value = money(split ? paymentState.splitAmount : paymentState.fullAmount);
+    document.getElementById('invoiceAmountLabel').textContent =
+      split ? 'Amount Due Now (50%)' : (paymentState.paid > 0 ? 'Remaining Balance' : 'Invoice Amount');
+  }
+
+  function resetPaymentOptions() {
+    paymentState = { splitAvailable: false, fullAmount: 0, splitAmount: 0, splitRemaining: 0, paid: 0 };
+    const panel = document.getElementById('payOptions');
+    panel.innerHTML = '';
+    panel.classList.remove('show');
+    document.getElementById('invoiceAmount').value = '';
+    document.getElementById('invoiceAmountLabel').textContent = 'Invoice Amount';
+  }
+
+  function renderPaymentOptions(data) {
+    paymentState = {
+      splitAvailable: Number(data.split_available) === 1,
+      fullAmount: Number(data.payment_amount || 0),
+      splitAmount: Number(data.split_amount || 0),
+      splitRemaining: Number(data.split_remaining || 0),
+      paid: Number(data.amount_paid || 0)
+    };
+
+    // Only numbers go into the markup below (money() formats a Number), so nothing from the server is injected as HTML.
+    const panel = document.getElementById('payOptions');
+
+    if (paymentState.splitAvailable) {
+      panel.innerHTML =
+        '<h3>Need more time? You can pay this invoice in two payments.</h3>'
+        + '<label class="pay-option"><input type="radio" name="payOption" value="FULL" checked>'
+        + '<span>Pay in full now: <strong>' + money(paymentState.fullAmount) + '</strong></span></label>'
+        + '<label class="pay-option"><input type="radio" name="payOption" value="SPLIT">'
+        + '<span>Pay 50% now: <strong>' + money(paymentState.splitAmount) + '</strong>. The remaining <strong>'
+        + money(paymentState.splitRemaining) + '</strong> is due later. You can pay it on this page with the same invoice number and PIN.</span></label>';
+      panel.classList.add('show');
+      panel.querySelectorAll('input[name="payOption"]').forEach(function (radio) {
+        radio.addEventListener('change', updateAmountShown);
+      });
+    }
+    else if (paymentState.paid > 0) {
+      panel.innerHTML = '<p>Thank you for your earlier payment of <strong>' + money(paymentState.paid)
+        + '</strong>. Your remaining balance is <strong>' + money(paymentState.fullAmount) + '</strong>.</p>';
+      panel.classList.add('show');
+    }
+    else {
+      panel.innerHTML = '';
+      panel.classList.remove('show');
+    }
+
+    updateAmountShown();
+  }
+
+  function paymentErrorMessage(code) {
+    if (code === 'SPLIT_NOT_AVAILABLE') {
+      return 'The 50% payment option is no longer available for this invoice. Please review the amount shown and try again.';
+    }
+    if (code === 'ALREADY_PAID' || code === 'NO_BALANCE') {
+      return 'This invoice has already been paid in full. Thank you!';
+    }
+    if (code === 'INVOICE_NOT_FOUND') {
+      return 'We could not find this invoice. Please look it up again.';
+    }
+    return 'We could not start your payment. Please try again or contact us below.';
+  }
 
   /**
   * ============================================================
@@ -352,6 +449,7 @@
       sessionFormData.append('address', address);
       sessionFormData.append('invoiceNumber', document.getElementById('invoiceNumber').value.trim());
       sessionFormData.append('invoiceCode', document.getElementById('propertyPIN').value.trim());
+      sessionFormData.append('paymentOption', selectedPaymentOption());
 
       const response = await fetch(GetStripeIdUrl, {
         method: 'POST',
@@ -359,7 +457,16 @@
       });
       const text = await response.text();
       const data = JSON.parse(text);
-      const sessionId = data[0].id;
+      const row = Array.isArray(data) ? data[0] : data;
+
+      if (!row || !row.id) {
+        // The server refused the request (for example the invoice was partly paid in another window)
+        const refused = new Error(paymentErrorMessage(row && row.error));
+        refused.refresh = true;
+        throw refused;
+      }
+
+      const sessionId = row.id;
 
       // This only returns if there's an immediate error - a successful
       // redirect navigates away from this page entirely, to Stripe's
@@ -375,6 +482,11 @@
       errorEl.classList.add('show');
       payButton.disabled = false;
       payButton.textContent = 'Pay Now';
+
+      // Re-run the lookup so the amount and options shown match the invoice as it now stands
+      if (error.refresh) {
+        document.getElementById('lookUpInvoice').click();
+      }
     }
   });
 

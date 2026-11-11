@@ -74,6 +74,8 @@
         Questions? Send us an email at <a href="mailto:info@theptd.com">info@theptd.com</a>. We are always happy to help.
       </p>
 
+      <p id="ccPartialNotice" class="hidden" style="font-weight:600;"></p>
+
       <dl class="confirm-details">
         <div class="confirm-row"><dt>Confirmation Code</dt><dd id="ccConfirmationCode"></dd></div>
         <div class="confirm-row"><dt>Invoice Number</dt><dd id="ccInvoiceNumber"></dd></div>
@@ -167,6 +169,18 @@
       document.getElementById('ccName').textContent =
         [info.firstName, info.lastName].filter(Boolean).join(' ');
       document.getElementById('ccEmail').textContent = info.email || '';
+
+      // 50% payment: tell the customer a balance remains (balanceRemaining / paidInFull come from the API)
+      const partialNotice = document.getElementById('ccPartialNotice');
+      if (info.paidInFull !== undefined && Number(info.paidInFull) === 0) {
+        const balance = Number(info.balanceRemaining || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        partialNotice.innerHTML = 'This was a partial payment. Your remaining balance of <strong>' + balance
+          + '</strong> is due later. You can pay it any time on our <a href="pay.html">payment page</a> using your invoice number and property PIN.';
+        partialNotice.classList.remove('hidden');
+      }
+      else {
+        partialNotice.classList.add('hidden');
+      }
 
       showPanel('confirmSuccess');
     }
