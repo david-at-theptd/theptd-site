@@ -9,10 +9,10 @@
 /**
 * The share of what the user saves in the first year that we charge.
 *
-* For example, a value of '1/3' would output across pages like "our fee is only
-* 1/3 of what we save you in the first year!"
+* For example, a value of '33%' would output across pages like "our fee is only
+* 33% of what we save you in the first year!"
 */
-const PriceShare = '1/2';
+const PriceShare = '33%';
 
 /**
 * Keys for writing into sessionStorage, so each page knows how to read from the
